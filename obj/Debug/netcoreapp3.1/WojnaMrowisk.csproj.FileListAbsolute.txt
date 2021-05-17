@@ -1,0 +1,13 @@
+C:\Users\stepp\source\repos\WojnaMrowisk\bin\Debug\netcoreapp3.1\WojnaMrowisk.exe
+C:\Users\stepp\source\repos\WojnaMrowisk\bin\Debug\netcoreapp3.1\WojnaMrowisk.deps.json
+C:\Users\stepp\source\repos\WojnaMrowisk\bin\Debug\netcoreapp3.1\WojnaMrowisk.runtimeconfig.json
+C:\Users\stepp\source\repos\WojnaMrowisk\bin\Debug\netcoreapp3.1\WojnaMrowisk.runtimeconfig.dev.json
+C:\Users\stepp\source\repos\WojnaMrowisk\bin\Debug\netcoreapp3.1\WojnaMrowisk.dll
+C:\Users\stepp\source\repos\WojnaMrowisk\bin\Debug\netcoreapp3.1\WojnaMrowisk.pdb
+C:\Users\stepp\source\repos\WojnaMrowisk\obj\Debug\netcoreapp3.1\WojnaMrowisk.csprojAssemblyReference.cache
+C:\Users\stepp\source\repos\WojnaMrowisk\obj\Debug\netcoreapp3.1\WojnaMrowisk.AssemblyInfoInputs.cache
+C:\Users\stepp\source\repos\WojnaMrowisk\obj\Debug\netcoreapp3.1\WojnaMrowisk.AssemblyInfo.cs
+C:\Users\stepp\source\repos\WojnaMrowisk\obj\Debug\netcoreapp3.1\WojnaMrowisk.csproj.CoreCompileInputs.cache
+C:\Users\stepp\source\repos\WojnaMrowisk\obj\Debug\netcoreapp3.1\WojnaMrowisk.dll
+C:\Users\stepp\source\repos\WojnaMrowisk\obj\Debug\netcoreapp3.1\WojnaMrowisk.pdb
+C:\Users\stepp\source\repos\WojnaMrowisk\obj\Debug\netcoreapp3.1\WojnaMrowisk.genruntimeconfig.cache
