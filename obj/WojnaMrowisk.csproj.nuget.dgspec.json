@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\stepp\\source\\repos\\WojnaMrowisk\\WojnaMrowisk.csproj": {}
+    "C:\\Users\\stepp\\Documents\\Mrowiska\\WojnaMrowisk\\WojnaMrowisk.csproj": {}
   },
   "projects": {
-    "C:\\Users\\stepp\\source\\repos\\WojnaMrowisk\\WojnaMrowisk.csproj": {
+    "C:\\Users\\stepp\\Documents\\Mrowiska\\WojnaMrowisk\\WojnaMrowisk.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\stepp\\source\\repos\\WojnaMrowisk\\WojnaMrowisk.csproj",
+        "projectUniqueName": "C:\\Users\\stepp\\Documents\\Mrowiska\\WojnaMrowisk\\WojnaMrowisk.csproj",
         "projectName": "WojnaMrowisk",
-        "projectPath": "C:\\Users\\stepp\\source\\repos\\WojnaMrowisk\\WojnaMrowisk.csproj",
+        "projectPath": "C:\\Users\\stepp\\Documents\\Mrowiska\\WojnaMrowisk\\WojnaMrowisk.csproj",
         "packagesPath": "C:\\Users\\stepp\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\stepp\\source\\repos\\WojnaMrowisk\\obj\\",
+        "outputPath": "C:\\Users\\stepp\\Documents\\Mrowiska\\WojnaMrowisk\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\stepp\\AppData\\Roaming\\NuGet\\NuGet.Config",
