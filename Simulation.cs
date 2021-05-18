@@ -6,6 +6,7 @@ namespace WojnaMrowisk
     class Simulation
     {
         private bool paused = false;
+        private bool running = true;
         private int i = 0;
         private List<Colony> colonies = new List<Colony>();
         Map map = new Map();
@@ -22,7 +23,7 @@ namespace WojnaMrowisk
             obstacles.Add(rock);
             sim.Start();
             sim.initMap(obstacles);
-            while (!sim.paused)
+            while (sim.running)
             {
                 sim.Update();
             }
@@ -40,8 +41,18 @@ namespace WojnaMrowisk
             //is called as fast as possible
             if (Console.KeyAvailable)
             {
+                
                 var key = Console.ReadKey();
-                if (key.Key == ConsoleKey.R)
+                if (key.Key == ConsoleKey.P)//pause
+                {
+                    paused = paused ? false : true;
+                    Console.Clear();
+                }
+                if (key.Key == ConsoleKey.A)//add a colony with default stats
+                {
+                    addColony();
+                }
+                if (key.Key == ConsoleKey.R && !paused)//respawn food
                 {
                     map.food = map.respawnFood();
                 }
@@ -56,20 +67,38 @@ namespace WojnaMrowisk
                 Console.Write("||");
                 for (int x = 0; x < map.dimensionX; x++) {
                     //Console.Write(map.gameBoard[x,y]);
-                    if (map.gameBoard[x, y] == 0) {
+                    if (map.gameBoard[x, y] == 0 || map.gameBoard[x,y] == 7) {
                         Console.Write(" ");
                     }
-                    if (map.gameBoard[x, y] == 10) {
+                    if (map.gameBoard[x, y] == 10) {//food
+                        Console.ForegroundColor = ConsoleColor.DarkYellow;
                         Console.Write("*");
+                        Console.ForegroundColor = ConsoleColor.Gray;
                     }
-                    if (map.gameBoard[x, y] == 1) { 
+                    if (map.gameBoard[x, y] == 1) { //obstacle
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
                         Console.Write("#");
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                    }
+                    if (map.gameBoard[x, y] == 3) {
+                        Console.ForegroundColor = ConsoleColor.Yellow;
+                        Console.Write("@");
+                        Console.ForegroundColor = ConsoleColor.Gray;
                     }
                 }
                 Console.Write("||");
                 switch (y) {
                     case 0:
                         Console.Write(" Dane symulacji\n");
+                        break;
+                    case 1:
+                        if (paused)
+                        {
+                            Console.Write(" [PAUSED]\n");
+                        }
+                        else {
+                            Console.Write("\n");
+                        }
                         break;
                     case 4:
                         Console.Write(" Ilosc kolonii: " + colonies.Count + "\n");
@@ -86,6 +115,13 @@ namespace WojnaMrowisk
                 Console.Write("=");
             }
             //Console.Clear();
+        }
+
+        void addColony() {
+            Colony col = new Colony();
+            colonies.Add(col);
+            col.initialize(map);
+            
         }
         //public void UpdateGraphics()
     }
@@ -154,7 +190,7 @@ namespace WojnaMrowisk
             gameBoard[positionToSpawn.x, positionToSpawn.y] = 10;
             return foodResp;
         }
-        Pos pickRandomPoint()
+        public Pos pickRandomPoint()
         {
             Pos position = new Pos();
             //Random randY = new Random();
@@ -214,25 +250,78 @@ namespace WojnaMrowisk
     }
     class Colony 
     {
-        private float speed;
-        private float foodDetectionRange;
-        private float alertRange;
-        private int health;
-        private int damage;
-        private float reprodRate;
+        private float speed = 1f;
+        private float foodDetectionRange = 3f;
+        private float alertRange = 2f;
+        private int health = 100;
+        private int damage = 25;
+        private float reprodRate = 10f;
+        private List<Anthill> anthills = new List<Anthill>();
         void die() { 
             
         }
+
+        public void initialize(Map map) { //automatically create an anthill at a random spot and place a queen
+            Anthill a = new Anthill();
+            Pos pos = map.pickRandomPoint();
+            bool overlaps = true;
+            bool test = false;
+            while (overlaps) {
+                test = false;
+                for (int y = 0; y < a.sizes.GetLength(2); y++)
+                {
+                    for (int x = 0; x < a.sizes.GetLength(1); x++)
+                    {
+                        if (map.dimensionX > pos.x + y && map.dimensionY > pos.y + x)
+                        {
+                            if (map.gameBoard[pos.x + y, pos.y + x] != 0) {
+                                test = true;
+                            }
+                        }
+                    }
+                }
+                if (test == false)
+                {
+                    overlaps = false;
+                }
+                else {
+                    pos = map.pickRandomPoint();
+                }
+            }
+            
+            for (int y = 0; y < a.sizes.GetLength(2); y++) {
+                for (int x = 0; x < a.sizes.GetLength(1); x++) {
+                    if (map.dimensionX > pos.x + y && map.dimensionY > pos.y + x) {
+                        map.gameBoard[pos.x + y, pos.y + x] = a.sizes[a.getSize(), x, y];
+                    }
+                }
+            }
+            anthills.Add(a);
+        }
     }
-    class Anthill:Colony 
+    class Anthill : Colony
     {
-        private int hunger;
-        private int numUnits;
-        private int size;
+        //private int[,] footprint;
+        public int[,,] sizes = new int[,,]{
+            { {7,7,7,7,7},
+            {7,7,7,7,7},
+            {7,3,3,3,7} },
+            { {7,7,7,7,7},
+            {7,7,3,7,7},
+            {3,3,3,3,3} },
+            { {7,7,3,7,7},
+            {7,3,3,3,7},
+            {3,3,3,3,3}}
+        };
+        private int hunger = 0;// 0 - ok, 100 - bad
+        private int numUnits = 0;
+        private int size = 0;
         private float reprodRate;
         private Pos position;
+        public int getSize() {
+            return size;
+        }
         void destroy() { 
-        
         }
         void grow() {
             size++;
@@ -243,7 +332,6 @@ namespace WojnaMrowisk
     }
     class Ant:Anthill 
     {
-        private char[,] footprint;
         private int health;
         private string state;
         private Pos position;
