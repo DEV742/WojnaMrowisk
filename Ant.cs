@@ -116,7 +116,7 @@ namespace WojnaMrowisk
                     newPos.x = (int)(Math.Round(startMovementVector.startX + (t * (startMovementVector.endX - startMovementVector.startX))));
                     newPos.y = (int)(Math.Round(startMovementVector.startY + (t * (startMovementVector.endY - startMovementVector.startY))));
 
-                    if ((map.dimensionX > newPos.x && newPos.x >= 0) && (map.dimensionY > newPos.y && newPos.y >= 0))
+                    if ((map.DimensionX > newPos.x && newPos.x >= 0) && (map.DimensionY > newPos.y && newPos.y >= 0))
                     {
                         if (standingOnValue != 2)
                         {
@@ -131,9 +131,9 @@ namespace WojnaMrowisk
                     {
 
                         if (newPos.x < 0) { newPos.x = 0; }
-                        if (newPos.x >= map.dimensionX) { newPos.x = map.dimensionX - 1; }
+                        if (newPos.x >= map.DimensionX) { newPos.x = map.DimensionX - 1; }
                         if (newPos.y < 0) { newPos.y = 0; }
-                        if (newPos.y >= map.dimensionY) { newPos.y = map.dimensionY - 1; }
+                        if (newPos.y >= map.DimensionY) { newPos.y = map.DimensionY - 1; }
                         if (standingOnValue != 2)
                         {
                             map.gameBoard[pos.x, pos.y] = standingOnValue;

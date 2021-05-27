@@ -51,7 +51,7 @@ namespace WojnaMrowisk
             {
                 for (int x = ah.position.x; x < ah.position.x + sizes.GetLength(1); x++)
                 {
-                    if (ah.position.x + sizes.GetLength(1) < map.dimensionX && ah.position.y + sizes.GetLength(2) < map.dimensionY)
+                    if (ah.position.x + sizes.GetLength(1) < map.DimensionX && ah.position.y + sizes.GetLength(2) < map.DimensionY)
                     {
                         if (map.gameBoard[x, y] == 4)
                         {

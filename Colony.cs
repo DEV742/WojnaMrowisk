@@ -46,7 +46,7 @@ namespace WojnaMrowisk
                 {
                     for (int x = 0; x < a.sizes.GetLength(1); x++)
                     {
-                        if (map.dimensionX > pos.x + y && map.dimensionY > pos.y + x)
+                        if (map.DimensionX > pos.x + y && map.DimensionY > pos.y + x)
                         {
                             if (map.gameBoard[pos.x + y, pos.y + x] != 0)
                             {
@@ -69,7 +69,7 @@ namespace WojnaMrowisk
             {
                 for (int x = 0; x < a.sizes.GetLength(1); x++)
                 {
-                    if (map.dimensionX > pos.x + y && map.dimensionY > pos.y + x)
+                    if (map.DimensionX > pos.x + y && map.DimensionY > pos.y + x)
                     {
                         map.gameBoard[pos.x + y, pos.y + x] = a.sizes[a.getSize(), x, y];
                     }

@@ -13,6 +13,7 @@ namespace WojnaMrowisk
         private Map map = new Map();
         private Colony col1 = new Colony();
         public Pos antTarget = new Pos();
+        public Menu menu = new Menu();
         public Map getMap() {
             return map;
         }
@@ -40,8 +41,10 @@ namespace WojnaMrowisk
             map.spawnObstacles(obst);
         }
         private void Start() {
-            //is called once in the beginning
-            map.gameBoard = new int[map.dimensionX, map.dimensionY];
+            (var size, var amount) = menu.menu();
+            map.DimensionX = size;
+            map.DimensionY = size;
+            map.gameBoard = new int[size, size];
             map.spawnFood();
             col1.initialize(map);
             colonies.Add(col1);
@@ -79,14 +82,14 @@ namespace WojnaMrowisk
                 }
             }
             Console.SetCursorPosition(0, 0);
-            for (int i = 0; i < map.dimensionX + 4; i++) {
+            for (int i = 0; i < map.DimensionX + 4; i++) {
                 Console.Write("=");
             }
             Console.Write("\n");
             Console.SetCursorPosition(0, 1);
-            for (int y = 0; y < map.dimensionY; y++) {
+            for (int y = 0; y < map.DimensionY; y++) {
                 Console.Write("||");
-                for (int x = 0; x < map.dimensionX; x++) {
+                for (int x = 0; x < map.DimensionX; x++) {
                     //Console.Write(map.gameBoard[x,y]);
                     if (map.gameBoard[x, y] == 0 || map.gameBoard[x,y] == 7) {
                         Console.Write(" ");
@@ -194,7 +197,7 @@ namespace WojnaMrowisk
                         break;
                 }
             }
-            for (int p = 0; p < map.dimensionX + 4; p++) {
+            for (int p = 0; p < map.DimensionX + 4; p++) {
                 Console.Write("=");
             }
             //Console.Clear();

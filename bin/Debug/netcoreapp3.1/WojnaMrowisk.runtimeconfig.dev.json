@@ -1,8 +1,8 @@
 {
   "runtimeOptions": {
     "additionalProbingPaths": [
-      "C:\\Users\\stepp\\.dotnet\\store\\|arch|\\|tfm|",
-      "C:\\Users\\stepp\\.nuget\\packages"
+      "C:\\Users\\Prius\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\Prius\\.nuget\\packages"
     ]
   }
 }

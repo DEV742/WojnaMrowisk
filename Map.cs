@@ -13,8 +13,18 @@ namespace WojnaMrowisk
         private int numBases;
         private int numColonies;
         public int[,] gameBoard;
-        public int dimensionX = 60;
-        public int dimensionY = 25;
+        private int dimensionX;
+        private int dimensionY;
+        public int DimensionX
+        {
+            get { return dimensionX; }
+            set { dimensionX = value; }
+        }
+        public int DimensionY
+        {
+            get { return dimensionY; }
+            set { dimensionY = value; }
+        }
         public Pos currentWaypoint = new Pos();
         // = new int[Console.WindowWidth, Console.WindowHeight];
         public Food food;
