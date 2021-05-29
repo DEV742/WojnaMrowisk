@@ -10,10 +10,12 @@ namespace WojnaMrowisk
         private bool paused = false;
         private bool running = true;
         public static List<Colony> colonies = new List<Colony>();
+        
         private Map map = new Map();
         private Colony col1 = new Colony();
         public Pos antTarget = new Pos();
         public Menu menu = new Menu();
+        public Food food = new Food();
         public Map getMap() {
             return map;
         }
@@ -46,11 +48,18 @@ namespace WojnaMrowisk
             map.DimensionY = size;
             map.gameBoard = new int[size, size];
             map.spawnFood();
-            col1.initialize(map);
-            colonies.Add(col1);
+            for (int i=0;i<amount;i++)
+            {
+                addColony();
+            }
+            
         }
         private void Update() {
             step++;
+            if (step % 30 == 0)
+            {
+                map.spawnFood();
+            }
             //is called as fast as possible w. 100ms sleep
             if (Console.KeyAvailable)
             {
@@ -67,7 +76,7 @@ namespace WojnaMrowisk
                 }
                 if (key.Key == ConsoleKey.R && !paused)//respawn food
                 {
-                    map.respawnFood();
+                    map.spawnFood();
                 }
             }
             foreach (Colony col in colonies) {
@@ -77,7 +86,7 @@ namespace WojnaMrowisk
                         if (antTarget != null) {
                             a.evaluateLogic(map, antTarget);
                         }
-                        //Thread.Sleep(100);
+                        //Thread.Sleep(10);
                     }
                 }
             }
@@ -213,7 +222,6 @@ namespace WojnaMrowisk
             Colony col = new Colony();
             colonies.Add(col);
             col.initialize(map);
-            
         }
         //public void UpdateGraphics()
     }

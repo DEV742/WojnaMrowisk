@@ -42,20 +42,35 @@ namespace WojnaMrowisk
 
         public void evaluateLogic(Map map, Pos antTarget)
         {
-  
-            if (map.food != null && Vector.CreateVector(getPos(), map.food.getPos()).distance() <= foodRange && !carrying)
+            int index = 0;
+            float[] minimum = new float[2]; //[0] - index [1] - distance
+            foreach (var item in Map.foods)
             {
+
+                var distance = Vector.CreateVector(getPos(), Map.foods[index].getPos()).distance();
+                if(index==0 || minimum[1]>distance)
+                {
+
+                    minimum[0] = index;
+                    minimum[1] = distance;
+                }
+                index++;
+            }
+            
+            if (Map.foods.Count != 0 &&  minimum[1] <= foodRange && !carrying)
+            {
+                Console.WriteLine(minimum[0]);
                 state = "food_going";
                 //reachedDestination = false;
                 //startMovementVector = Vector.CreateVector(getPos(), map.food.getPos());
-                goToFood(map.food, map);
+                goToFood(map,(int)minimum[0]);
 
-                if (map.food.getPos().x == getPos().x && map.food.getPos().y == getPos().y && !carrying) {
-                    if (map.food.foodParts > 0) {
+                if (Map.foods[(int)minimum[0]].getPos().x == getPos().x && Map.foods[(int)minimum[0]].getPos().y == getPos().y && !carrying) {
+                    if (Map.foods[(int)minimum[0]].foodParts > 0) {
                         carrying = true;
-                        map.food.foodParts--;
-                        if (map.food.foodParts <= 0) {
-                            map.destroyFood();
+                        Map.foods[(int)minimum[0]].foodParts--;
+                        if (Map.foods[(int)minimum[0]].foodParts <= 0) {
+                            map.destroyFood((int)minimum[0]);
                         }
                     }
                 }
@@ -126,9 +141,9 @@ namespace WojnaMrowisk
         {
 
         }
-        void goToFood(Food food, Map map)
+        void goToFood(Map map, int foodIndex)
         {
-            move(map.food.getPos(), map);
+            move(Map.foods[foodIndex].getPos(), map);
         }
         void goToAnthill(Map map)
         {

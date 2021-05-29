@@ -20,7 +20,7 @@ namespace WojnaMrowisk
         }
         private float alertRange = 2f;
         private int health = 100;
-        private float maxDistFromAnthill = 4f;
+        private float maxDistFromAnthill = 40f;
         public float distFromAnthill {
             get { return maxDistFromAnthill; }
             set { maxDistFromAnthill = value; }
