@@ -12,7 +12,7 @@ namespace WojnaMrowisk
             get { return speed; }
             set { speed = value; }
         }
-        private float foodDetectionRange = 100f;
+        private float foodDetectionRange = 15f;
         public float foodRange
         {
             get { return foodDetectionRange; }
@@ -20,6 +20,11 @@ namespace WojnaMrowisk
         }
         private float alertRange = 2f;
         private int health = 100;
+        private float maxDistFromAnthill = 4f;
+        public float distFromAnthill {
+            get { return maxDistFromAnthill; }
+            set { maxDistFromAnthill = value; }
+        }
         public int Health
         {
             get { return health; }

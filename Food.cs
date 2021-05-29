@@ -6,8 +6,12 @@ namespace WojnaMrowisk
 {
     class Food
     {
-        private int partsValue;
+        public static int partsValue = 20;
         private int numParts;
+        public int foodParts {
+            get { return numParts; }
+            set { numParts = value; }
+        }
         private Pos position = new Pos();
 
         void destroy()
