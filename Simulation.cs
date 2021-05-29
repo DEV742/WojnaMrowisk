@@ -9,7 +9,7 @@ namespace WojnaMrowisk
     {
         private bool paused = false;
         private bool running = true;
-        private List<Colony> colonies = new List<Colony>();
+        public static List<Colony> colonies = new List<Colony>();
         private Map map = new Map();
         private Colony col1 = new Colony();
         public Pos antTarget = new Pos();
@@ -139,7 +139,13 @@ namespace WojnaMrowisk
                         Console.Write(" Ilosc kolonii: " + colonies.Count + "\n");
                         break;
                     case 5:
-                        Console.Write("Pozycja jedzenia: " + map.food.getPos().x + "," + map.food.getPos().y +"\n");
+                        if (map.food != null)
+                        {
+                            Console.Write("Pozycja jedzenia: " + map.food.getPos().x + "," + map.food.getPos().y + "\n");
+                        }
+                        else {
+                            Console.Write("\n");
+                        }
                         break;
                     case 6:
                         Console.Write("Steps: " + step + "\n");

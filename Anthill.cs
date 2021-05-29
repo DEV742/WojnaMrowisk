@@ -18,7 +18,11 @@ namespace WojnaMrowisk
             {7,3,3,3,7},
             {3,3,4,3,3}}
         };
-        private int hunger = 0;// 0 - ok, 100 - bad
+        private int hunger = 100;// 100 - ok, 0 - bad
+        public int Hunger {
+            get { return hunger; }
+            set { hunger = value; }
+        }
         private int numUnits = 0;
         private int size = 0;
         private float reprodRate;
@@ -32,6 +36,12 @@ namespace WojnaMrowisk
         public int getSize()
         {
             return size;
+        }
+        public Pos getAhPos() {
+            Pos ps = new Pos();
+            ps.x = position.x + 2;
+            ps.y = position.y + 2;
+            return ps;
         }
         void destroy()
         {
@@ -64,6 +74,7 @@ namespace WojnaMrowisk
             ant.setPos(posToSpawn);
             ant.health = Health;
             ant.stOnV = 4;
+            ant.antsAnthill = this;
             map.gameBoard[posToSpawn.x, posToSpawn.y] = 2;
             ants.Add(ant);
         }

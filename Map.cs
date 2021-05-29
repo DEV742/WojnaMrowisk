@@ -39,8 +39,33 @@ namespace WojnaMrowisk
             }
             sfood.setPos(positionToSpawn.x, positionToSpawn.y);
             gameBoard[positionToSpawn.x, positionToSpawn.y] = 10;
+            sfood.foodParts = rand.generate(1, 5);
             food = sfood;
             //return sfood;
+        }
+        public void destroyFood()
+        {
+            if (gameBoard[food.getPos().x, food.getPos().y] != 2)
+            {
+                gameBoard[food.getPos().x, food.getPos().y] = 0;
+            }
+            else
+            {
+                foreach (Colony col in Simulation.colonies)
+                {
+                    foreach (Anthill ah in col.anthills)
+                    {
+                        foreach (Ant ant in ah.ants)
+                        {
+                            if (ant.getPos().x == food.getPos().x && ant.getPos().y == food.getPos().y)
+                            {
+                                ant.stOnV = 0;
+                            }
+                        }
+                    }
+                }
+                food = null;
+            }
         }
         public void spawnObstacles(List<Obstacle> obst)
         {
@@ -68,17 +93,17 @@ namespace WojnaMrowisk
         }
         public void respawnFood()
         {
-            //gameBoard[food.getPos().x, food.getPos().y] = 0;
-            Food foodResp = new Food();
+            Food sfood = new Food();
             Pos positionToSpawn = pickRandomPoint();
             while (gameBoard[positionToSpawn.x, positionToSpawn.y] != 0)
             {
                 positionToSpawn = pickRandomPoint();
             }
-            foodResp.setPos(positionToSpawn.x, positionToSpawn.y);
+            sfood.setPos(positionToSpawn.x, positionToSpawn.y);
             gameBoard[positionToSpawn.x, positionToSpawn.y] = 10;
-            food = foodResp;
-            //return foodResp;
+            sfood.foodParts = rand.generate(1, 5);
+            food = sfood;
+            //return sfood;
         }
         public Pos pickRandomPoint()
         {
