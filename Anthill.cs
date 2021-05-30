@@ -19,14 +19,20 @@ namespace WojnaMrowisk
             {3,3,4,3,3}}
         };
         private int hunger = 100;// 100 - ok, 0 - bad
-        public int Hunger {
+        public int Hunger
+        {
             get { return hunger; }
             set { hunger = value; }
         }
         private int numUnits = 0;
         private int size = 0;
+        public int Size {
+            get { return size; }
+            set { size = value; }
+        }
         private float reprodRate;
         private Pos position;
+        public Ant queen;
         public Pos Pos
         {
             get { return position; }
@@ -37,7 +43,8 @@ namespace WojnaMrowisk
         {
             return size;
         }
-        public Pos getAhPos() {
+        public Pos getAhPos()
+        {
             Pos ps = new Pos();
             ps.x = position.x + 2;
             ps.y = position.y + 2;
@@ -50,32 +57,59 @@ namespace WojnaMrowisk
         {
             size++;
         }
-        public void init(Map map, Anthill a)
+
+        public void evaluateAnthillLogic(Map map)
         {
-            spawnAnt(map, a);
-        }
-        public void spawnAnt(Map map, Anthill ah)
-        {
-            Pos posToSpawn = new Pos();
-            for (int y = ah.position.y; y < ah.position.y + sizes.GetLength(2); y++)
+            if (hunger > 100) {
+                hunger = 100;
+            }
+            if (queen != null)
             {
-                for (int x = ah.position.x; x < ah.position.x + sizes.GetLength(1); x++)
+                if (Simulation.step % 2 == 0 && hunger > 0) {
+                    hunger -= 1;
+                }
+                if (hunger > 50 && ants.Count > size+1 * 4 && Simulation.step % 40 == 0)//upgrading an anthill
                 {
-                    if (ah.position.x + sizes.GetLength(1) < map.DimensionX && ah.position.y + sizes.GetLength(2) < map.DimensionY)
+                    size++;
+                    for (int y = 0; y < sizes.GetLength(2); y++)
                     {
-                        if (map.gameBoard[x, y] == 4)
+                        for (int x = 0; x < sizes.GetLength(1); x++)
                         {
-                            posToSpawn.x = x; posToSpawn.y = y;
+                            if (map.DimensionX > position.x + y && map.DimensionY > position.y + x)
+                            {
+                                map.gameBoard[position.x + y, position.y + x] = sizes[getSize(), x, y];
+                            }
                         }
                     }
                 }
+                if(hunger > 25 && Simulation.step % 50 == 0)
+                {
+                    spawnAnt(map, this, false);
+                }
             }
+            else { 
+                //destroy();
+            }
+        }
+        public void init(Map map, Anthill a)
+        {
+            spawnAnt(map, a, false);
+            spawnAnt(map, a, true);
+        }
+        public void spawnAnt(Map map, Anthill ah, bool isQueen)
+        {
+            Pos posToSpawn = new Pos();
+            posToSpawn.x = getAhPos().x; posToSpawn.y = getAhPos().y;
             Ant ant = new Ant();
             ant.setPos(posToSpawn);
             ant.health = Health;
             ant.stOnV = 4;
             ant.antsAnthill = this;
             map.gameBoard[posToSpawn.x, posToSpawn.y] = 2;
+            ant.isQueen = isQueen;
+            if (isQueen) {
+                queen = ant;
+            }
             ants.Add(ant);
         }
     }

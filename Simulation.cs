@@ -16,6 +16,7 @@ namespace WojnaMrowisk
         public Pos antTarget = new Pos();
         public Menu menu = new Menu();
         public Food food = new Food();
+        public List<Obstacle> obstacles = new List<Obstacle>();
         public Map getMap() {
             return map;
         }
@@ -29,10 +30,8 @@ namespace WojnaMrowisk
              {0,1,1,1,0},
              {1,1,1,1,1}
             };
-            List<Obstacle> obstacles = new List<Obstacle>();
-            obstacles.Add(rock);
+            sim.obstacles.Add(rock);
             sim.Start();
-            sim.initMap(obstacles);
             while (sim.running)
             {
                 sim.Update();
@@ -47,6 +46,7 @@ namespace WojnaMrowisk
             map.DimensionX = size;
             map.DimensionY = size;
             map.gameBoard = new int[size, size];
+            initMap(obstacles);
             map.spawnFood();
             for (int i=0;i<amount;i++)
             {
@@ -79,9 +79,11 @@ namespace WojnaMrowisk
                     map.spawnFood();
                 }
             }
-            foreach (Colony col in colonies) {
-                foreach (Anthill ah in col.anthills) {
-                    foreach (Ant a in ah.ants)
+            foreach (Colony col in colonies.ToArray()) {
+                col.evaluateColonyLogic(map);
+                foreach (Anthill ah in col.anthills.ToArray()) {
+                    ah.evaluateAnthillLogic(map);
+                    foreach (Ant a in ah.ants.ToArray())
                     {
                         if (antTarget != null) {
                             a.evaluateLogic(map, antTarget);
@@ -119,8 +121,26 @@ namespace WojnaMrowisk
                         Console.ForegroundColor = ConsoleColor.Gray;
                     }
                     if (map.gameBoard[x, y] == 2) {
-                        Console.ForegroundColor = ConsoleColor.Magenta;
-                        Console.Write("$");
+                        ConsoleColor c = ConsoleColor.Magenta;
+                        char symbol = '$';
+                        foreach (Colony col in colonies)
+                        {
+                            foreach (Anthill ah in col.anthills)
+                            {
+                                foreach (Ant a in ah.ants)
+                                {
+                                    if (a.getPos().x == x && a.getPos().y == y) {
+                                        c = col.color;
+                                        if (a.isQueen)
+                                        {
+                                            symbol = '&';
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        Console.ForegroundColor = c;
+                        Console.Write(symbol);
                         Console.ForegroundColor = ConsoleColor.Gray;
                     }
                     if (map.gameBoard[x, y] == 11)
@@ -158,6 +178,9 @@ namespace WojnaMrowisk
                         break;
                     case 6:
                         Console.Write("Steps: " + step + "\n");
+                        break;
+                    case 7:
+                        Console.Write("Anthill1.Hunger = " + colonies[0].anthills[0].Hunger + "\n");
                         break;
                     /*
                      * ============[Debug stuff]===========

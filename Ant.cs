@@ -17,6 +17,7 @@ namespace WojnaMrowisk
         public Vector startMovementVector;
         private Anthill antH;
         private Pos target;
+        public bool isQueen;
 
         public Anthill antsAnthill {
             get { return antH; }
@@ -42,84 +43,117 @@ namespace WojnaMrowisk
 
         public void evaluateLogic(Map map, Pos antTarget)
         {
-            int index = 0;
-            float[] minimum = new float[2]; //[0] - index [1] - distance
-            foreach (var item in Map.foods)
+            if (Simulation.step > 3)
             {
-
-                var distance = Vector.CreateVector(getPos(), Map.foods[index].getPos()).distance();
-                if(index==0 || minimum[1]>distance)
+                int index = 0;
+                float[] minimum = new float[2]; //[0] - index [1] - distance
+                foreach (var item in Map.foods)
                 {
 
-                    minimum[0] = index;
-                    minimum[1] = distance;
-                }
-                index++;
-            }
-            
-            if (Map.foods.Count != 0 &&  minimum[1] <= foodRange && !carrying)
-            {
-                Console.WriteLine(minimum[0]);
-                state = "food_going";
-                //reachedDestination = false;
-                //startMovementVector = Vector.CreateVector(getPos(), map.food.getPos());
-                goToFood(map,(int)minimum[0]);
+                    var distance = Vector.CreateVector(getPos(), Map.foods[index].getPos()).distance();
+                    if (index == 0 || minimum[1] > distance)
+                    {
 
-                if (Map.foods[(int)minimum[0]].getPos().x == getPos().x && Map.foods[(int)minimum[0]].getPos().y == getPos().y && !carrying) {
-                    if (Map.foods[(int)minimum[0]].foodParts > 0) {
-                        carrying = true;
-                        Map.foods[(int)minimum[0]].foodParts--;
-                        if (Map.foods[(int)minimum[0]].foodParts <= 0) {
-                            map.destroyFood((int)minimum[0]);
+                        minimum[0] = index;
+                        minimum[1] = distance;
+                    }
+                    index++;
+                }
+                if (!isQueen)
+                {
+                    if (Map.foods.Count != 0 && minimum[1] <= foodRange && !carrying)
+                    {
+                        Console.WriteLine(minimum[0]);
+                        state = "food_going";
+                        //reachedDestination = false;
+                        //startMovementVector = Vector.CreateVector(getPos(), map.food.getPos());
+                        goToFood(map, (int)minimum[0]);
+
+                        if (Map.foods[(int)minimum[0]].getPos().x == getPos().x && Map.foods[(int)minimum[0]].getPos().y == getPos().y && !carrying)
+                        {
+                            if (Map.foods[(int)minimum[0]].foodParts > 0)
+                            {
+                                carrying = true;
+                                Map.foods[(int)minimum[0]].foodParts--;
+                                if (Map.foods[(int)minimum[0]].foodParts <= 0)
+                                {
+                                    map.destroyFood((int)minimum[0]);
+                                }
+                            }
+                        }
+                    }//all of the other states should go with else if here...
+                    else
+                    { //wandering/returning state
+
+                        if (Vector.CreateVector(getPos(), antsAnthill.getAhPos()).distance() >= antsAnthill.distFromAnthill || carrying)
+                        {
+                            //make the ant go back to the anthill
+                            state = "returning";
+                        }
+                        else
+                        {
+                            if (Vector.CreateVector(getPos(), antsAnthill.getAhPos()).distance() < 2f || map.food == null)
+                            {
+                                state = "wandering";
+                            }
+                        }
+
+                        if (state == "returning")
+                        {
+                            if (getPos().x != antsAnthill.getAhPos().x || getPos().y != antsAnthill.getAhPos().y)
+                            {
+                                goToAnthill(map);
+
+                            }
+                            else
+                            {
+                                if (carrying)
+                                {
+                                    antsAnthill.Hunger += Food.partsValue;
+                                    carrying = false;
+                                }
+                                state = "wandering";
+                            }
+                        }
+                        else if (state == "wandering")
+                        {
+                            if (target == null || reachedDestination)
+                            {
+                                target = map.pickRandomPoint();
+
+                                while (Vector.CreateVector(antsAnthill.getAhPos(), target).distance() > antsAnthill.distFromAnthill)
+                                {
+                                    target = map.pickRandomPoint();
+                                }
+                            }
+                            if (target != null) { 
+                                move(target, map);
+                            }
+
                         }
                     }
                 }
-            }//all of the other states should go with else if here...
-            else { //wandering/returning state
-
-                if (Vector.CreateVector(getPos(), antsAnthill.getAhPos()).distance() >= antsAnthill.distFromAnthill || carrying)
+                else
                 {
-                    //make the ant go back to the anthill
-                    state = "returning";
-                }
-                else {
-                    if (Vector.CreateVector(getPos(), antsAnthill.getAhPos()).distance() < 2f || map.food == null)
+                    if (target == null || reachedDestination)
                     {
-                        state = "wandering";
-                    }
-                }
-
-                if (state == "returning")
-                {
-                    if (getPos().x != antsAnthill.getAhPos().x|| getPos().y != antsAnthill.getAhPos().y)
-                    {
-                        goToAnthill(map);
-
-                    }
-                    else {
-                        if (carrying) {
-                            antsAnthill.Hunger += Food.partsValue;
-                            carrying = false;
-                        }
-                        state = "wandering";
-                    }
-                }
-                else if (state == "wandering") {
-                    if (target == null || reachedDestination) {
                         target = map.pickRandomPoint();
 
-                        while (Vector.CreateVector(antsAnthill.getAhPos(), target).distance() > antsAnthill.distFromAnthill) {
+                        while (Vector.CreateVector(antsAnthill.getAhPos(), target).distance() > 2f)
+                        {
                             target = map.pickRandomPoint();
                         }
                     }
-                    move(target, map);
-
+                    if (target != null)
+                    {
+                        move(target, map);
+                    }
                 }
+                //else {
+                //state = "wander";
+                //move(antTarget, map);
+                //}
             }
-            //else {
-            //state = "wander";
-            //move(antTarget, map);
-            //}
         }
         public void setPos(Pos position)
         {
@@ -157,6 +191,7 @@ namespace WojnaMrowisk
 
             f(t) = f0 + ((t - t0)/(t1 - t0))(f1 - f0)
             */
+
             if (!reachedDestination)
             {
                 if (movementVector != null)
@@ -178,6 +213,9 @@ namespace WojnaMrowisk
                 }
                 else
                 {
+                    if (movementVector == null) {
+                        movementVector = Vector.CreateVector(getPos(), tpos);
+                    }
                     startMovementVector = movementVector;
                     t = distCovered / startMovementVector.distance();
                 }
@@ -192,34 +230,30 @@ namespace WojnaMrowisk
 
                     if ((map.DimensionX > newPos.x && newPos.x >= 0) && (map.DimensionY > newPos.y && newPos.y >= 0))
                     {
-                        if (map.gameBoard[newPos.x, newPos.y] == 2)
+                        foreach (Colony col in Simulation.colonies)
                         {
-                            foreach (Colony col in Simulation.colonies)
+                            foreach (Anthill ah in col.anthills)
                             {
-                                foreach (Anthill ah in col.anthills)
+                                foreach (Ant ant in ah.ants)
                                 {
-                                    foreach (Ant ant in ah.ants)
+                                    if (ant.getPos().x == getPos().x && ant.getPos().y == getPos().y && ant.standingOnValue != 2)
                                     {
-                                        if (ant.getPos().x == newPos.x && ant.getPos().y == newPos.y && ant.standingOnValue != 2)
-                                        {
-                                            standingOnValue = ant.standingOnValue;
-                                        }
+                                        standingOnValue = ant.standingOnValue;
                                     }
                                 }
                             }
-                            if (standingOnValue != 10)
-                            {
-                                map.gameBoard[pos.x, pos.y] = standingOnValue;
-                            }
-                            else {
-                                map.gameBoard[pos.x, pos.y] = 0;
-                            }
-                            //standingOnValue = map.gameBoard[newPos.x, newPos.y];
+                        }
+                        if (standingOnValue != 2) { 
+                            map.gameBoard[pos.x, pos.y] = standingOnValue;
+                        }
+                        /*if (standingOnValue != 10)
+                        {
+                            map.gameBoard[pos.x, pos.y] = standingOnValue;
                         }
                         else {
-                            map.gameBoard[pos.x, pos.y] = standingOnValue;
-                            standingOnValue = map.gameBoard[newPos.x, newPos.y];
-                        }
+                            map.gameBoard[pos.x, pos.y] = 0;
+                        }*/
+                        standingOnValue = map.gameBoard[newPos.x, newPos.y];
                         map.gameBoard[newPos.x, newPos.y] = 2;
                         pos.x = newPos.x;
                         pos.y = newPos.y;
@@ -231,29 +265,30 @@ namespace WojnaMrowisk
                         if (newPos.x >= map.DimensionX) { newPos.x = map.DimensionX - 1; }
                         if (newPos.y < 0) { newPos.y = 0; }
                         if (newPos.y >= map.DimensionY) { newPos.y = map.DimensionY - 1; }
-                        if (map.gameBoard[newPos.x, newPos.y] == 2)
-                        {
+                        //if (map.gameBoard[newPos.x, newPos.y] == 2)
+                        //{
                             foreach (Colony col in Simulation.colonies)
                             {
                                 foreach (Anthill ah in col.anthills)
                                 {
                                     foreach (Ant ant in ah.ants)
                                     {
-                                        if (ant.getPos().x == newPos.x && ant.getPos().y == newPos.y && ant.standingOnValue != 2)
+                                        if (ant.getPos().x == getPos().x && ant.getPos().y == getPos().y && ant.standingOnValue != 2)
                                         {
+                                            
                                             standingOnValue = ant.standingOnValue;
                                         }
                                     }
                                 }
                             }
                             map.gameBoard[pos.x, pos.y] = standingOnValue;
-                            //standingOnValue = map.gameBoard[newPos.x, newPos.y];
-                        }
-                        else
-                        {
-                            map.gameBoard[pos.x, pos.y] = standingOnValue;
                             standingOnValue = map.gameBoard[newPos.x, newPos.y];
-                        }
+                        //}
+                        //else
+                        //{
+                         //   map.gameBoard[pos.x, pos.y] = standingOnValue;
+                         //   standingOnValue = map.gameBoard[newPos.x, newPos.y];
+                        //}
                         map.gameBoard[newPos.x, newPos.y] = 2;
                         pos.x = newPos.x;
                         pos.y = newPos.y;
