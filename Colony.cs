@@ -29,7 +29,11 @@ namespace WojnaMrowisk
             get { return foodDetectionRange; }
             set { foodDetectionRange = value; }
         }
-        private float alertRange = 2f;
+        private float antsVisionRange = 10f;//distance of aggression
+        public float visRange {
+            get { return antsVisionRange; }
+            set { antsVisionRange = value; }
+        }
         private int health = 100;
         private float maxDistFromAnthill = 40f;
         public float distFromAnthill {

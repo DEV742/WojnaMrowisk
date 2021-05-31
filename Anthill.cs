@@ -66,9 +66,9 @@ namespace WojnaMrowisk
             if (queen != null)
             {
                 if (Simulation.step % 2 == 0 && hunger > 0) {
-                    hunger -= 1;
+                    hunger -= (int)MathF.Round(ants.Count/2);
                 }
-                if (hunger > 50 && ants.Count > size+1 * 4 && Simulation.step % 40 == 0)//upgrading an anthill
+                if (hunger > 50 && ants.Count > size+1 * 4 && Simulation.step % 40 == 0 && size < sizes.GetLength(0)-1)//upgrading an anthill
                 {
                     size++;
                     for (int y = 0; y < sizes.GetLength(2); y++)
@@ -111,6 +111,9 @@ namespace WojnaMrowisk
                 queen = ant;
             }
             ants.Add(ant);
+        }
+        public Colony getColony() { 
+            return this;
         }
     }
 }

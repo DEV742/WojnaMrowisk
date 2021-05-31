@@ -11,6 +11,7 @@ namespace WojnaMrowisk
         private Pos pos = new Pos();
         public bool carrying;
         public float t;
+        public float movementSpeedDebuff = 3f;
         public bool reachedDestination = true;
         public float movementTimeStart;
         public Vector movementVector;
@@ -19,7 +20,8 @@ namespace WojnaMrowisk
         private Pos target;
         public bool isQueen;
 
-        public Anthill antsAnthill {
+        public Anthill antsAnthill
+        {
             get { return antH; }
             set { antH = value; }
         }
@@ -40,7 +42,23 @@ namespace WojnaMrowisk
         {
             return pos;
         }
+        public List<Ant> checkForAntsAround() {
+            List<Ant> antsAround = new List<Ant>();
 
+            foreach (Colony col in Simulation.colonies)
+            {
+                foreach (Anthill ah in col.anthills)
+                {
+                    foreach (Ant a in ah.ants)
+                    {
+                        if (Vector.CreateVector(getPos(), a.getPos()).distance() <= visRange && a != this) {
+                            antsAround.Add(a);
+                        }
+                    }
+                }
+            }
+            return antsAround;
+        }
         public void evaluateLogic(Map map, Pos antTarget)
         {
             if (Simulation.step > 3)
@@ -61,12 +79,18 @@ namespace WojnaMrowisk
                 }
                 if (!isQueen)
                 {
-                    if (Map.foods.Count != 0 && minimum[1] <= foodRange && !carrying)
+                    /*foreach (Ant a in checkForAntsAround()) {
+                        if (a.getPos().x == getPos().x && a.getPos().y == getPos().y) { 
+                            //attack
+                        }
+                    }*/
+                    if (Map.foods.Count != 0 && minimum[1] <= foodRange && !carrying && checkForObstacle(map, Map.foods[(int)minimum[0]].getPos()))
                     {
                         Console.WriteLine(minimum[0]);
                         state = "food_going";
                         //reachedDestination = false;
                         //startMovementVector = Vector.CreateVector(getPos(), map.food.getPos());
+
                         goToFood(map, (int)minimum[0]);
 
                         if (Map.foods[(int)minimum[0]].getPos().x == getPos().x && Map.foods[(int)minimum[0]].getPos().y == getPos().y && !carrying)
@@ -81,7 +105,16 @@ namespace WojnaMrowisk
                                 }
                             }
                         }
-                    }//all of the other states should go with else if here...
+                    } /*else if (checkForAntsAround().Count > 0) {
+                        foreach (Ant a in checkForAntsAround()) {
+                            if (a.carrying && a.antsAnthill.getColony() != antsAnthill.getColony()) {
+                                move(a.getPos(), map);
+                                if (a.getPos().x == getPos().x && a.getPos().y == getPos().y) { 
+                                    //start fightitng for food
+                                }
+                            }
+                        }
+                    }*///all of the other states should go with else if here...
                     else
                     { //wandering/returning state
 
@@ -121,12 +154,13 @@ namespace WojnaMrowisk
                             {
                                 target = map.pickRandomPoint();
 
-                                while (Vector.CreateVector(antsAnthill.getAhPos(), target).distance() > antsAnthill.distFromAnthill)
+                                while (Vector.CreateVector(antsAnthill.getAhPos(), target).distance() > antsAnthill.distFromAnthill || !checkForObstacle(map, target))
                                 {
                                     target = map.pickRandomPoint();
                                 }
                             }
-                            if (target != null) { 
+                            if (target != null)
+                            {
                                 move(target, map);
                             }
 
@@ -171,9 +205,20 @@ namespace WojnaMrowisk
         {
 
         }
-        void collectFood()
-        {
+        public bool checkForObstacle(Map map, Pos tpos) {
+            float frac = 0;
+            Vector checkingVector = Vector.CreateVector(getPos(), tpos);
+            Pos checkerPos = new Pos();
+            for (frac = 0; frac < 1; frac += 0.02f)
+            {
+                checkerPos.x = (int)(Math.Round(checkingVector.startX + (frac * (checkingVector.endX - checkingVector.startX))));
+                checkerPos.y = (int)(Math.Round(checkingVector.startY + (frac * (checkingVector.endY - checkingVector.startY))));
 
+                if (map.gameBoard[checkerPos.x, checkerPos.y] == 1) {
+                    return false;
+                }
+            }
+            return true;
         }
         void goToFood(Map map, int foodIndex)
         {
@@ -192,81 +237,44 @@ namespace WojnaMrowisk
             f(t) = f0 + ((t - t0)/(t1 - t0))(f1 - f0)
             */
 
-            if (!reachedDestination)
-            {
-                if (movementVector != null)
+                if (!reachedDestination)
                 {
-                    if (tpos.x != movementVector.endX || tpos.y != movementVector.endY)
+                    if (movementVector != null)
                     {
-                        t = 0;
-                        movementVector = movementVector = Vector.CreateVector(getPos(), tpos);
-                        startMovementVector = movementVector;
-                        movementTimeStart = Simulation.step;
+                        if (tpos.x != movementVector.endX || tpos.y != movementVector.endY)
+                        {
+                            t = 0;
+                            movementVector = movementVector = Vector.CreateVector(getPos(), tpos);
+                            startMovementVector = movementVector;
+                            movementTimeStart = Simulation.step;
+                        }
                     }
-                }
-                movementVector = Vector.CreateVector(getPos(), tpos);
-
-                float distCovered = MathF.Abs(((Simulation.step - movementTimeStart) * Speed));
-                if (startMovementVector != null)
-                {
-                    t = distCovered / startMovementVector.distance();
-                }
-                else
-                {
-                    if (movementVector == null) {
-                        movementVector = Vector.CreateVector(getPos(), tpos);
-                    }
-                    startMovementVector = movementVector;
-                    t = distCovered / startMovementVector.distance();
-                }
-                //t = movementVector.distance() / (Speed);
-                //t = Math.Clamp(t, 0, 1);
-                if (pos.x != tpos.x || pos.y != tpos.y)
-                {
-                    //newPos.x = (int)(MathF.Round((1 - t) * pos.x + t * tpos.x));
-                    //newPos.y = (int)(MathF.Round((1 - t) * pos.y + t * tpos.y));
-                    newPos.x = (int)(Math.Round(startMovementVector.startX + (t * (startMovementVector.endX - startMovementVector.startX))));
-                    newPos.y = (int)(Math.Round(startMovementVector.startY + (t * (startMovementVector.endY - startMovementVector.startY))));
-
-                    if ((map.DimensionX > newPos.x && newPos.x >= 0) && (map.DimensionY > newPos.y && newPos.y >= 0))
+                    movementVector = Vector.CreateVector(getPos(), tpos);
+                float distCovered  = MathF.Abs(((Simulation.step - movementTimeStart) * Speed));
+                    if (startMovementVector != null)
                     {
-                        foreach (Colony col in Simulation.colonies)
-                        {
-                            foreach (Anthill ah in col.anthills)
-                            {
-                                foreach (Ant ant in ah.ants)
-                                {
-                                    if (ant.getPos().x == getPos().x && ant.getPos().y == getPos().y && ant.standingOnValue != 2)
-                                    {
-                                        standingOnValue = ant.standingOnValue;
-                                    }
-                                }
-                            }
-                        }
-                        if (standingOnValue != 2) { 
-                            map.gameBoard[pos.x, pos.y] = standingOnValue;
-                        }
-                        /*if (standingOnValue != 10)
-                        {
-                            map.gameBoard[pos.x, pos.y] = standingOnValue;
-                        }
-                        else {
-                            map.gameBoard[pos.x, pos.y] = 0;
-                        }*/
-                        standingOnValue = map.gameBoard[newPos.x, newPos.y];
-                        map.gameBoard[newPos.x, newPos.y] = 2;
-                        pos.x = newPos.x;
-                        pos.y = newPos.y;
+                        t = distCovered / startMovementVector.distance();
                     }
                     else
                     {
+                        if (movementVector == null)
+                        {
+                            movementVector = Vector.CreateVector(getPos(), tpos);
+                        }
+                        startMovementVector = movementVector;
+                        t = distCovered / startMovementVector.distance();
+                    }
+                    //t = movementVector.distance() / (Speed);
+                    //t = Math.Clamp(t, 0, 1);
+                    if (pos.x != tpos.x || pos.y != tpos.y)
+                    {
+                        //newPos.x = (int)(MathF.Round((1 - t) * pos.x + t * tpos.x));
+                        //newPos.y = (int)(MathF.Round((1 - t) * pos.y + t * tpos.y));
+                        newPos.x = (int)(Math.Round(startMovementVector.startX + (t * (startMovementVector.endX - startMovementVector.startX))));
+                        newPos.y = (int)(Math.Round(startMovementVector.startY + (t * (startMovementVector.endY - startMovementVector.startY))));
 
-                        if (newPos.x < 0) { newPos.x = 0; }
-                        if (newPos.x >= map.DimensionX) { newPos.x = map.DimensionX - 1; }
-                        if (newPos.y < 0) { newPos.y = 0; }
-                        if (newPos.y >= map.DimensionY) { newPos.y = map.DimensionY - 1; }
-                        //if (map.gameBoard[newPos.x, newPos.y] == 2)
-                        //{
+                        if ((map.DimensionX > newPos.x && newPos.x >= 0) && (map.DimensionY > newPos.y && newPos.y >= 0))
+                        {
                             foreach (Colony col in Simulation.colonies)
                             {
                                 foreach (Anthill ah in col.anthills)
@@ -275,7 +283,45 @@ namespace WojnaMrowisk
                                     {
                                         if (ant.getPos().x == getPos().x && ant.getPos().y == getPos().y && ant.standingOnValue != 2)
                                         {
-                                            
+                                            standingOnValue = ant.standingOnValue;
+                                        }
+                                    }
+                                }
+                            }
+                            if (standingOnValue != 2)
+                            {
+                                map.gameBoard[pos.x, pos.y] = standingOnValue;
+                            }
+                            /*if (standingOnValue != 10)
+                            {
+                                map.gameBoard[pos.x, pos.y] = standingOnValue;
+                            }
+                            else {
+                                map.gameBoard[pos.x, pos.y] = 0;
+                            }*/
+                            standingOnValue = map.gameBoard[newPos.x, newPos.y];
+                            map.gameBoard[newPos.x, newPos.y] = 2;
+                            pos.x = newPos.x;
+                            pos.y = newPos.y;
+                        }
+                else
+                        {
+
+                            if (newPos.x < 0) { newPos.x = 0; }
+                            if (newPos.x >= map.DimensionX) { newPos.x = map.DimensionX - 1; }
+                            if (newPos.y < 0) { newPos.y = 0; }
+                            if (newPos.y >= map.DimensionY) { newPos.y = map.DimensionY - 1; }
+                            //if (map.gameBoard[newPos.x, newPos.y] == 2)
+                            //{
+                            foreach (Colony col in Simulation.colonies)
+                            {
+                                foreach (Anthill ah in col.anthills)
+                                {
+                                    foreach (Ant ant in ah.ants)
+                                    {
+                                        if (ant.getPos().x == getPos().x && ant.getPos().y == getPos().y && ant.standingOnValue != 2)
+                                        {
+
                                             standingOnValue = ant.standingOnValue;
                                         }
                                     }
@@ -283,41 +329,44 @@ namespace WojnaMrowisk
                             }
                             map.gameBoard[pos.x, pos.y] = standingOnValue;
                             standingOnValue = map.gameBoard[newPos.x, newPos.y];
-                        //}
-                        //else
-                        //{
-                         //   map.gameBoard[pos.x, pos.y] = standingOnValue;
-                         //   standingOnValue = map.gameBoard[newPos.x, newPos.y];
-                        //}
-                        map.gameBoard[newPos.x, newPos.y] = 2;
-                        pos.x = newPos.x;
-                        pos.y = newPos.y;
+                            //}
+                            //else
+                            //{
+                            //   map.gameBoard[pos.x, pos.y] = standingOnValue;
+                            //   standingOnValue = map.gameBoard[newPos.x, newPos.y];
+                            //}
+                            map.gameBoard[newPos.x, newPos.y] = 2;
+                            pos.x = newPos.x;
+                            pos.y = newPos.y;
 
+                        }
                     }
+                    if (pos.x == tpos.x && pos.y == tpos.y)
+                    {
+                        reachedDestination = true;
+                        //t = 0;
+                        //movementTimeStart = 0;
+                        //startMovementVector = null;
+                    }
+
                 }
-                if (pos.x == tpos.x && pos.y == tpos.y)
+                else
                 {
-                    reachedDestination = true;
                     //t = 0;
                     //movementTimeStart = 0;
                     //startMovementVector = null;
                 }
-
-            }
-            else
-            {
-                //t = 0;
-                //movementTimeStart = 0;
-                //startMovementVector = null;
-            }
-            if (reachedDestination && (tpos.x != pos.x || tpos.y != pos.y))
-            {
-                movementTimeStart = Simulation.step;
-                startMovementVector = Vector.CreateVector(getPos(), tpos);
-                reachedDestination = false;
-                //movementVector = Vector.CreateVector(getPos(), tpos);
-                //t = 0;
-            }
+                if (reachedDestination && (tpos.x != pos.x || tpos.y != pos.y))
+                {
+                    movementTimeStart = Simulation.step;
+                    startMovementVector = Vector.CreateVector(getPos(), tpos);
+                    reachedDestination = false;
+                    //movementVector = Vector.CreateVector(getPos(), tpos);
+                    //t = 0;
+                }
+            
         }
     }
+
 }
+
