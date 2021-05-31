@@ -1,11 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "DpvXfKAEzbHboGx8OM72pvqtrf3lioU4VxLbngyEN9HRZ8bJgFFo2WOwf+a/Z0UZHU9CT84IKj6GLzljKrpv0w==",
+  "dgSpecHash": "keZhqAYKE5W++aVyG00jJWboP9vUz1fkZXpOxKut6BxZNYVIajz19P5mX8+QdlJNY/zUIx3Hknrlpm3phQBaJQ==",
   "success": true,
-  "projectFilePath": "C:\\Users\\stepp\\Documents\\Mrowiska\\WojnaMrowisk\\WojnaMrowisk.csproj",
-  "expectedPackageFiles": [
-    "C:\\Users\\stepp\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\3.1.10\\microsoft.aspnetcore.app.ref.3.1.10.nupkg.sha512",
-    "C:\\Users\\stepp\\.nuget\\packages\\microsoft.netcore.app.host.win-x64\\3.1.12\\microsoft.netcore.app.host.win-x64.3.1.12.nupkg.sha512"
-  ],
+  "projectFilePath": "C:\\Users\\Prius\\source\\finals\\DEV742\\WojnaMrowisk\\WojnaMrowisk.csproj",
+  "expectedPackageFiles": [],
   "logs": []
 }

@@ -6,13 +6,6 @@ namespace WojnaMrowisk
 {
     class Colony
     {
-        private float speed = 1;
-        public float Speed
-        {
-            get { return speed; }
-            set { speed = value; }
-        }
-        private float foodDetectionRange = 15f;
         public  ConsoleColor color;
 
         public ConsoleColor getRandomColor() {
@@ -24,28 +17,12 @@ namespace WojnaMrowisk
             }
             return col;
         }
-        public float foodRange
-        {
-            get { return foodDetectionRange; }
-            set { foodDetectionRange = value; }
-        }
-        private float antsVisionRange = 10f;//distance of aggression
-        public float visRange {
-            get { return antsVisionRange; }
-            set { antsVisionRange = value; }
-        }
-        private int health = 100;
         private float maxDistFromAnthill = 40f;
-        public float distFromAnthill {
+        public float distFromAnthill
+        {
             get { return maxDistFromAnthill; }
             set { maxDistFromAnthill = value; }
         }
-        public int Health
-        {
-            get { return health; }
-            set { health = value; }
-        }
-        private int damage = 25;
         private float reprodRate = 10f;
         public List<Anthill> anthills = new List<Anthill>();
         void die()

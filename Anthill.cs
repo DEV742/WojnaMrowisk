@@ -100,11 +100,52 @@ namespace WojnaMrowisk
         {
             Pos posToSpawn = new Pos();
             posToSpawn.x = getAhPos().x; posToSpawn.y = getAhPos().y;
+            Random random = new Random();
+            int antClass = random.Next(1,100);
+            Console.Write(antClass);
             Ant ant = new Ant();
             ant.setPos(posToSpawn);
-            ant.health = Health;
+            ant.Health = 100;
             ant.stOnV = 4;
             ant.antsAnthill = this;
+            if (antClass<=10)
+            {
+                //fighter
+                int newHP = 100, newDamage = 25;
+                int antPoints = random.Next(1, 5);
+                for(int i=0;i<antPoints;i++)
+                {
+                    int antUpgrade = random.Next(1, 2);
+                    if (antUpgrade == 1) newHP += 5;
+                    if (antUpgrade == 2) newDamage += 3;
+                }
+                //5% per ant to get this, only once
+                int rareUpgrade = random.Next(1, 20);
+                if (rareUpgrade == 3) newDamage += 7;
+                ant.Health = newHP;
+                ant.Damage = newDamage;
+                ant.visRange = 15f;
+                Console.WriteLine("New Fighter. HP: " + newHP +" Damage: "+ newDamage);
+            }
+            if (antClass > 10 && antClass <= 20)
+            {
+                //better Gatherer
+                int newHP = 100, newDamage = 25;
+                int antPoints = random.Next(1, 5);
+                for (int i = 0; i < antPoints; i++)
+                {
+                    int antUpgrade = random.Next(1, 2);
+                    if (antUpgrade == 1) newHP += 9;
+                    if (antUpgrade == 2) newDamage += 1;
+                }
+                //5% per ant to get this, only once
+                int rareUpgrade = random.Next(1, 20);
+                if (rareUpgrade == 3) newHP += 30;
+                ant.Health = newHP;
+                ant.Damage = newDamage;
+                ant.foodRange = 15f;
+                Console.WriteLine("New Gatherer. HP: " + newHP + " Damage: " + newDamage);
+            }
             map.gameBoard[posToSpawn.x, posToSpawn.y] = 2;
             ant.isQueen = isQueen;
             if (isQueen) {

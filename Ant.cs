@@ -6,7 +6,36 @@ namespace WojnaMrowisk
 {
     class Ant : Anthill
     {
-        private int hp;
+        private float speed = 1;
+        public float Speed
+        {
+            get { return speed; }
+            set { speed = value; }
+        }
+        public float foodRange
+        {
+            get { return foodDetectionRange; }
+            set { foodDetectionRange = value; }
+        }
+        private float antsVisionRange = 10f;//distance of aggression
+        public float visRange
+        {
+            get { return antsVisionRange; }
+            set { antsVisionRange = value; }
+        }
+        private int health = 100;
+        public int Health
+        {
+            get { return health; }
+            set { health = value; }
+        }
+        private int damage = 25;
+        public int Damage
+        {
+            get { return damage; }
+            set { damage = value; }
+        }
+        private float foodDetectionRange = 15f;
         private string state = "wandering";
         private Pos pos = new Pos();
         public bool carrying;
@@ -32,11 +61,6 @@ namespace WojnaMrowisk
         {
             get { return standingOnValue; }
             set { standingOnValue = value; }
-        }
-        public int health
-        {
-            get { return hp; }
-            set { hp = value; }
         }
         public Pos getPos()
         {

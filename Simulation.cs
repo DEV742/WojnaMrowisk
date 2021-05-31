@@ -88,7 +88,7 @@ namespace WojnaMrowisk
                         if (antTarget != null) {
                             a.evaluateLogic(map, antTarget);
                         }
-                        //Thread.Sleep(10);
+                        Thread.Sleep(10);
                     }
                 }
             }
