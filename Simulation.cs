@@ -78,6 +78,10 @@ namespace WojnaMrowisk
                 {
                     map.spawnFood();
                 }
+                if (key.Key == ConsoleKey.D && !paused)//delete colony
+                {
+                    colonies[0].anthills[0].destroy(map);
+                }
             }
             foreach (Colony col in colonies.ToArray()) {
                 col.evaluateColonyLogic(map);
@@ -88,7 +92,7 @@ namespace WojnaMrowisk
                         if (antTarget != null) {
                             a.evaluateLogic(map, antTarget);
                         }
-                        Thread.Sleep(10);
+                        //Thread.Sleep(300);
                     }
                 }
             }

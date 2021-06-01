@@ -50,8 +50,11 @@ namespace WojnaMrowisk
             ps.y = position.y + 2;
             return ps;
         }
-        void destroy()
+        public void destroy(Map map)
         {
+            Console.WriteLine("ded");
+            map.destroyAnthill(this);
+            anthills.Remove(this);
         }
         void grow()
         {
@@ -88,7 +91,7 @@ namespace WojnaMrowisk
                 }
             }
             else { 
-                //destroy();
+                destroy(map);
             }
         }
         public void init(Map map, Anthill a)
@@ -143,6 +146,7 @@ namespace WojnaMrowisk
                 if (rareUpgrade == 3) newHP += 30;
                 ant.Health = newHP;
                 ant.Damage = newDamage;
+                ant.Speed = 1;
                 ant.foodRange = 15f;
                 Console.WriteLine("New Gatherer. HP: " + newHP + " Damage: " + newDamage);
             }

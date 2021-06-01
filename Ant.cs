@@ -6,7 +6,7 @@ namespace WojnaMrowisk
 {
     class Ant : Anthill
     {
-        private float speed = 1;
+        private float speed = 0.7f;
         public float Speed
         {
             get { return speed; }

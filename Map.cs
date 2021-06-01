@@ -68,6 +68,16 @@ namespace WojnaMrowisk
                 foods.RemoveAt(index);
             }
         }
+        public void destroyAnthill(Anthill anthill)
+        {
+            for (int y = 0; y < anthill.sizes.GetLength(2); y++)
+            {
+                for (int x = 0; x < anthill.sizes.GetLength(1); x++)
+                {
+                        gameBoard[anthill.Pos.x + y, anthill.Pos.y + x] = 0;
+                }
+            }
+        }
         public void spawnObstacles(List<Obstacle> obst)
         {
             //Random rand = new Random();
