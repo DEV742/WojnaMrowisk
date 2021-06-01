@@ -24,6 +24,7 @@ namespace WojnaMrowisk
             get { return hunger; }
             set { hunger = value; }
         }
+        bool dead = false;
         private int numUnits = 0;
         private int size = 0;
         public int Size {
@@ -52,13 +53,18 @@ namespace WojnaMrowisk
         }
         public void destroy(Map map)
         {
-            //Console.WriteLine("ded");
-            map.destroyAnthill(this);
-            Simulation.colonies.Remove(this);
-            foreach (Ant ant in ants.ToArray()) {
-                ant.die(map);
+            if (!dead)
+            {
+                dead = true;
+                //Console.WriteLine("ded");
+                map.destroyAnthill(this);
+                //anthills.Remove(this);
+                foreach (Ant ant in ants.ToArray())
+                {
+                    ant.die(map);
+                }
+                anthills.Remove(this);
             }
-            anthills.Remove(this);
         }
         void grow()
         {
@@ -73,7 +79,7 @@ namespace WojnaMrowisk
             if (queen != null)
             {
                 if (Simulation.step % 2 == 0 && hunger > 0) {
-                    hunger -= (int)MathF.Round(ants.Count/2);
+                    hunger -= (int)MathF.Round((ants.Count * (size+1))/2);
                 }
                 if (hunger > 50 && ants.Count > size+1 * 4 && Simulation.step % 40 == 0 && size < sizes.GetLength(0)-1)//upgrading an anthill
                 {
@@ -157,6 +163,7 @@ namespace WojnaMrowisk
             map.gameBoard[posToSpawn.x, posToSpawn.y] = 2;
             ant.isQueen = isQueen;
             if (isQueen) {
+                ant.Damage = 0;
                 queen = ant;
             }
             ants.Add(ant);

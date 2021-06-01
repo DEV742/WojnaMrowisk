@@ -54,6 +54,13 @@ namespace WojnaMrowisk
         public bool isQueen;
         public bool dead = false;
 
+        public List<Ant> antsAround = new List<Ant>();
+        public List<Ant> enemyAntsAround = new List<Ant>();
+        public List<Ant> queens = new List<Ant>();
+
+        public float closestEnemyQueenDist = 0;
+        public float closestEnemyAntDist = 0;
+
         public Anthill antsAnthill
         {
             get { return antH; }
@@ -115,11 +122,55 @@ namespace WojnaMrowisk
                 }
                 if (!isQueen)
                 {
-                    List<Ant> antsAround = checkForAntsAround();
-                    List<Ant> carryingAntsFromDiffColAround = new List<Ant>();
+                    antsAround = checkForAntsAround();
+                    enemyAntsAround = new List<Ant>();
+                    queens = new List<Ant>();
                     foreach (Ant ant in antsAround) {
-                        if (ant.carrying && ant.antsAnthill.getColony() != this.antsAnthill.getColony()) {
-                            carryingAntsFromDiffColAround.Add(ant);
+                        if (ant.antsAnthill.getColony() != this.antsAnthill.getColony()) {
+                            enemyAntsAround.Add(ant);
+                        }
+                        if (ant.isQueen && ant.antsAnthill.getColony() != this.antsAnthill.getColony()) {
+                            queens.Add(ant);
+                        }
+                    }
+
+                    closestEnemyQueenDist = int.MaxValue;
+                    closestEnemyAntDist = int.MaxValue;
+                    if (queens.Count != 0) {
+                        float minDist = 0;
+                        Vector vec;
+                        for (int i = 0; i < queens.Count; i++)
+                        {
+                            vec = Vector.CreateVector(getPos(), queens[i].getPos());
+                            if (i == 0)
+                            {
+                                minDist = vec.distance();
+                                closestEnemyQueenDist = minDist;
+                            }
+                            if (minDist > vec.distance())
+                            {
+                                minDist = vec.distance();
+                                closestEnemyQueenDist = minDist;
+                            }
+                        }
+                    }
+                    if (enemyAntsAround.Count != 0)
+                    {
+                        float minDist = 0;
+                        Vector vec;
+                        for (int i = 0; i < enemyAntsAround.Count; i++)
+                        {
+                            vec = Vector.CreateVector(getPos(), enemyAntsAround[i].getPos());
+                            if (i == 0)
+                            {
+                                minDist = vec.distance();
+                                closestEnemyAntDist = minDist;
+                            }
+                            if (minDist > vec.distance())
+                            {
+                                minDist = vec.distance();
+                                closestEnemyAntDist = minDist;
+                            }
                         }
                     }
                     foreach (Ant a in antsAround) {
@@ -139,7 +190,8 @@ namespace WojnaMrowisk
                             }
                         }
                     }
-                    if (Map.foods.Count != 0 && minimum[1] <= foodRange && !carrying && checkForObstacle(map, Map.foods[(int)minimum[0]].getPos()) && state != "fighting")
+
+                    if (Map.foods.Count != 0 && minimum[1] <= foodRange && !carrying && checkForObstacle(map, Map.foods[(int)minimum[0]].getPos()) && state != "fighting" && (minimum[1] <= closestEnemyAntDist && minimum[1] <= closestEnemyQueenDist))
                     {
                         Console.WriteLine(minimum[0]);
                         state = "food_going";
@@ -150,6 +202,7 @@ namespace WojnaMrowisk
 
                         if (Map.foods[(int)minimum[0]].getPos().x == getPos().x && Map.foods[(int)minimum[0]].getPos().y == getPos().y && !carrying)
                         {
+
                             if (Map.foods[(int)minimum[0]].foodParts > 0)
                             {
                                 carrying = true;
@@ -160,34 +213,68 @@ namespace WojnaMrowisk
                                 }
                             }
                         }
-                    } else if (carryingAntsFromDiffColAround.Count > 0 && !carrying && state != "fighting") {
+                    } else if (queens.Count > 0 && visRange >= closestEnemyQueenDist && state != "fighting" && !carrying && (closestEnemyQueenDist < minimum[1] && closestEnemyQueenDist < closestEnemyAntDist)) {//attacking the closest queen 
                         float minDist = 0;
-                        Ant a = carryingAntsFromDiffColAround[0];
+                        Ant closestEnemyQueen = queens[0];
                         Vector vec = new Vector();
-                        for (int i = 0; i < carryingAntsFromDiffColAround.Count; i++) {
-                            vec = Vector.CreateVector(getPos(), carryingAntsFromDiffColAround[i].getPos());
+                        for (int i = 0; i < queens.Count; i++) {
+                            vec = Vector.CreateVector(getPos(), queens[i].getPos());
                             if (i == 0) {
                                 minDist = vec.distance();
-                                a = carryingAntsFromDiffColAround[i];
+                                closestEnemyQueen = queens[i];
                             }
                             if (minDist > vec.distance()) {
                                 minDist = vec.distance();
-                                a = carryingAntsFromDiffColAround[i];
+                                closestEnemyQueen = queens[i];
                             }
-                            move(a.getPos(), map);
-                            if (a.getPos().x == getPos().x && a.getPos().y == getPos().y) {
-                                if (a.State != "fighting")
-                                {
-                                    Fight fight = new Fight();
+                        }
+                        if (state != "attacking_queen" && queen.getPos().x != getPos().x && queen.getPos().y != getPos().y)
+                        {
+                            state = "attacking_queen";
+                        }
+                        move(queen.getPos(), map);
+                        if (queen.getPos().x == getPos().x && queen.getPos().y == getPos().y)
+                        {
+                            if (queen.State != "fighting")
+                            {
+                                Fight fight = new Fight();
 
-                                    fight.StartFight(this, a, map);
-                                    stopMovement();
-                                    a.stopMovement();
-                                    state = "fighting";
-                                    a.State = "fighting";
-                                }
+                                fight.StartFight(this, queen, map);
+                                stopMovement();
+                                queen.stopMovement();
+                                state = "fighting";
+                                queen.State = "fighting";
                             }
-                            
+                        }
+                    } else if (enemyAntsAround.Count > 0 && visRange >= closestEnemyAntDist&& state != "fighting" && !carrying && (closestEnemyAntDist < minimum[1] && closestEnemyAntDist < closestEnemyQueenDist)) {//attacking all ants around
+                        float minDist = 0;
+                        Ant a = enemyAntsAround[0];
+                        Vector vec = new Vector();
+                        for (int i = 0; i < enemyAntsAround.Count; i++) {
+                            vec = Vector.CreateVector(getPos(), enemyAntsAround[i].getPos());
+                            if (i == 0) {
+                                minDist = vec.distance();
+                                a = enemyAntsAround[i];
+                            }
+                            if (minDist > vec.distance()) {
+                                minDist = vec.distance();
+                                a = enemyAntsAround[i];
+                            }
+
+                        }
+                        move(a.getPos(), map);
+                        if (a.getPos().x == getPos().x && a.getPos().y == getPos().y)
+                        {
+                            if (a.State != "fighting")
+                            {
+                                Fight fight = new Fight();
+
+                                fight.StartFight(this, a, map);
+                                stopMovement();
+                                a.stopMovement();
+                                state = "fighting";
+                                a.State = "fighting";
+                            }
                         }
                     }//all of the other states should go with else if here...
                     else
@@ -272,9 +359,15 @@ namespace WojnaMrowisk
         }
         public void die(Map map)
         {
-            dead = true;
-            map.gameBoard[getPos().x, getPos().y] = standingOnValue;
-            antsAnthill.ants.Remove(this);
+            if (!dead) { 
+                dead = true;
+                if (isQueen)
+                {
+                    antsAnthill.queen = null;
+                }
+                map.gameBoard[getPos().x, getPos().y] = standingOnValue;
+                antsAnthill.ants.Remove(this);
+            }
         }
         Food checkForFood(float radius)
         {
