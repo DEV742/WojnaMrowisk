@@ -6,15 +6,22 @@ namespace WojnaMrowisk
 {
     class Colony
     {
-        public  ConsoleColor color;
+        public ConsoleColor color;
 
         public ConsoleColor getRandomColor() {
             var consoleColors = Enum.GetValues(typeof(ConsoleColor));
 
-            ConsoleColor col = (ConsoleColor)consoleColors.GetValue(rand.generate(0, consoleColors.Length)); ;
-            while (col == ConsoleColor.Black) {
+            ConsoleColor col = (ConsoleColor)consoleColors.GetValue(rand.generate(0, consoleColors.Length));
+            int i = 0;
+            while (col == ConsoleColor.Black || Simulation.colorsUsed.Contains(col)) {
+                i++;
                 col = (ConsoleColor)consoleColors.GetValue(rand.generate(0, consoleColors.Length));
+
+                if (i == 10) break;
             }
+
+            Simulation.colorsUsed.Add(col);
+
             return col;
         }
         private float maxDistFromAnthill = 40f;

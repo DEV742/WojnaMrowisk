@@ -52,8 +52,12 @@ namespace WojnaMrowisk
         }
         public void destroy(Map map)
         {
-            Console.WriteLine("ded");
+            //Console.WriteLine("ded");
             map.destroyAnthill(this);
+            Simulation.colonies.Remove(this);
+            foreach (Ant ant in ants.ToArray()) {
+                ant.die(map);
+            }
             anthills.Remove(this);
         }
         void grow()

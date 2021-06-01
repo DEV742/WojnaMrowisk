@@ -10,7 +10,8 @@ namespace WojnaMrowisk
         private bool paused = false;
         private bool running = true;
         public static List<Colony> colonies = new List<Colony>();
-        
+        public static List<Fight> fights = new List<Fight>();
+        public static List<ConsoleColor> colorsUsed = new List<ConsoleColor>();
         private Map map = new Map();
         private Colony col1 = new Colony();
         public Pos antTarget = new Pos();
@@ -83,16 +84,22 @@ namespace WojnaMrowisk
                     colonies[0].anthills[0].destroy(map);
                 }
             }
+            
+            foreach (Fight f in fights.ToArray()) {
+                f.evaluateFight();
+            }
             foreach (Colony col in colonies.ToArray()) {
                 col.evaluateColonyLogic(map);
                 foreach (Anthill ah in col.anthills.ToArray()) {
                     ah.evaluateAnthillLogic(map);
                     foreach (Ant a in ah.ants.ToArray())
                     {
-                        if (antTarget != null) {
+                        if (!a.dead)
+                        {
                             a.evaluateLogic(map, antTarget);
+                           // Thread.Sleep(10);
                         }
-                        //Thread.Sleep(300);
+                        Thread.Sleep(10);
                     }
                 }
             }
@@ -119,6 +126,12 @@ namespace WojnaMrowisk
                         Console.Write("#");
                         Console.ForegroundColor = ConsoleColor.Gray;
                     }
+                    if (map.gameBoard[x, y] == 5)
+                    { //fight
+                        Console.ForegroundColor = ConsoleColor.DarkGray;
+                        Console.Write("!");
+                        Console.ForegroundColor = ConsoleColor.Gray;
+                    }
                     if (map.gameBoard[x, y] == 3 || map.gameBoard[x, y] == 4) {
                         Console.ForegroundColor = ConsoleColor.Yellow;
                         Console.Write("@");
@@ -138,6 +151,10 @@ namespace WojnaMrowisk
                                         if (a.isQueen)
                                         {
                                             symbol = '&';
+                                        }
+                                        else if (a.State == "fighting" || a.dead)
+                                        {
+                                            symbol = ' ';
                                         }
                                     }
                                 }
