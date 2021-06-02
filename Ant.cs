@@ -102,7 +102,7 @@ namespace WojnaMrowisk
             target = null;
             t = 0;
         }
-        public void evaluateLogic(Map map, Pos antTarget)
+        public void evaluateLogic(Map map)
         {
             if (Simulation.step > 3)
             {
@@ -126,10 +126,10 @@ namespace WojnaMrowisk
                     enemyAntsAround = new List<Ant>();
                     queens = new List<Ant>();
                     foreach (Ant ant in antsAround) {
-                        if (ant.antsAnthill.getColony() != this.antsAnthill.getColony()) {
+                        if (ant.antsAnthill.getColonyID() != this.antsAnthill.getColonyID() && !ant.isQueen) {
                             enemyAntsAround.Add(ant);
                         }
-                        if (ant.isQueen && ant.antsAnthill.getColony() != this.antsAnthill.getColony()) {
+                        if (ant.isQueen && ant.antsAnthill.getColonyID() != this.antsAnthill.getColonyID()) {
                             queens.Add(ant);
                         }
                     }
@@ -174,7 +174,7 @@ namespace WojnaMrowisk
                         }
                     }
                     foreach (Ant a in antsAround) {
-                        if (a.getPos().x == getPos().x && a.getPos().y == getPos().y && a.antsAnthill.getColony() != antsAnthill.getColony() && state != "fighting" && a.State != "fighting") {
+                        if (a.getPos().x == getPos().x && a.getPos().y == getPos().y && a.antsAnthill.getColonyID() != antsAnthill.getColonyID() && state != "fighting" && a.State != "fighting") {
                             if (state != "fighting" && a.state != "fighting") {
                                 Fight fight = new Fight();
                                 fight.StartFight(this, a, map);
@@ -191,7 +191,7 @@ namespace WojnaMrowisk
                         }
                     }
 
-                    if (Map.foods.Count != 0 && minimum[1] <= foodRange && !carrying && checkForObstacle(map, Map.foods[(int)minimum[0]].getPos()) && state != "fighting" && (minimum[1] <= closestEnemyAntDist && minimum[1] <= closestEnemyQueenDist))
+                    if (Map.foods.Count != 0 && minimum[1] <= foodRange && !carrying && checkForObstacle(map, Map.foods[(int)minimum[0]].getPos()) && state != "fighting" && state != "attacking_queen" && (minimum[1] <= closestEnemyAntDist && minimum[1] <= closestEnemyQueenDist))
                     {
                         Console.WriteLine(minimum[0]);
                         state = "food_going";
@@ -228,25 +228,25 @@ namespace WojnaMrowisk
                                 closestEnemyQueen = queens[i];
                             }
                         }
-                        if (state != "attacking_queen" && queen.getPos().x != getPos().x && queen.getPos().y != getPos().y)
+                        if (state != "attacking_queen" && closestEnemyQueen.getPos().x != getPos().x && closestEnemyQueen.getPos().y != getPos().y)
                         {
                             state = "attacking_queen";
                         }
-                        move(queen.getPos(), map);
-                        if (queen.getPos().x == getPos().x && queen.getPos().y == getPos().y)
+                        move(closestEnemyQueen.getPos(), map);
+                        if (closestEnemyQueen.getPos().x == getPos().x && closestEnemyQueen.getPos().y == getPos().y)
                         {
-                            if (queen.State != "fighting")
+                            if (closestEnemyQueen.State != "fighting")
                             {
                                 Fight fight = new Fight();
 
-                                fight.StartFight(this, queen, map);
+                                fight.StartFight(this, closestEnemyQueen, map);
                                 stopMovement();
-                                queen.stopMovement();
+                                closestEnemyQueen.stopMovement();
                                 state = "fighting";
-                                queen.State = "fighting";
+                                closestEnemyQueen.State = "fighting";
                             }
                         }
-                    } else if (enemyAntsAround.Count > 0 && visRange >= closestEnemyAntDist&& state != "fighting" && !carrying && (closestEnemyAntDist < minimum[1] && closestEnemyAntDist < closestEnemyQueenDist)) {//attacking all ants around
+                    } else if (enemyAntsAround.Count > 0 && visRange >= closestEnemyAntDist&& state != "fighting" &&state != "attacking_queen"&& !carrying && (closestEnemyAntDist < minimum[1] && closestEnemyAntDist < closestEnemyQueenDist)) {//attacking all ants around
                         float minDist = 0;
                         Ant a = enemyAntsAround[0];
                         Vector vec = new Vector();
@@ -441,61 +441,73 @@ namespace WojnaMrowisk
                         newPos.x = (int)(Math.Round(startMovementVector.startX + (t * (startMovementVector.endX - startMovementVector.startX))));
                         newPos.y = (int)(Math.Round(startMovementVector.startY + (t * (startMovementVector.endY - startMovementVector.startY))));
 
-                        if ((map.DimensionX > newPos.x && newPos.x >= 0) && (map.DimensionY > newPos.y && newPos.y >= 0))
+                    if ((map.DimensionX > newPos.x && newPos.x >= 0) && (map.DimensionY > newPos.y && newPos.y >= 0))
+                    {
+                        foreach (Colony col in Simulation.colonies)
                         {
-                            foreach (Colony col in Simulation.colonies)
+                            foreach (Anthill ah in col.anthills)
                             {
-                                foreach (Anthill ah in col.anthills)
+                                foreach (Ant ant in ah.ants)
                                 {
-                                    foreach (Ant ant in ah.ants)
+                                    if (ant.getPos().x == getPos().x && ant.getPos().y == getPos().y && ant.standingOnValue != 2 && ant.standingOnValue != 5)
                                     {
-                                        if (ant.getPos().x == getPos().x && ant.getPos().y == getPos().y && ant.standingOnValue != 2)
-                                        {
-                                            standingOnValue = ant.standingOnValue;
-                                        }
+                                        standingOnValue = ant.standingOnValue;
                                     }
                                 }
                             }
-                            if (standingOnValue != 2)
-                            {
-                                map.gameBoard[pos.x, pos.y] = standingOnValue;
-                            }
-                            /*if (standingOnValue != 10)
+                        }
+                        if (standingOnValue != 2 && standingOnValue != 5)
+                        {
+                            if (!dead)
                             {
                                 map.gameBoard[pos.x, pos.y] = standingOnValue;
                             }
                             else {
                                 map.gameBoard[pos.x, pos.y] = 0;
-                            }*/
-                            standingOnValue = map.gameBoard[newPos.x, newPos.y];
-                            map.gameBoard[newPos.x, newPos.y] = 2;
-                            pos.x = newPos.x;
-                            pos.y = newPos.y;
+                            }
                         }
-                else
+                        /*if (standingOnValue != 10)
                         {
+                            map.gameBoard[pos.x, pos.y] = standingOnValue;
+                        }
+                        else {
+                            map.gameBoard[pos.x, pos.y] = 0;
+                        }*/
+                        standingOnValue = map.gameBoard[newPos.x, newPos.y];
+                        map.gameBoard[newPos.x, newPos.y] = 2;
+                        pos.x = newPos.x;
+                        pos.y = newPos.y;
+                    }
+                    else
+                    {
 
-                            if (newPos.x < 0) { newPos.x = 0; }
-                            if (newPos.x >= map.DimensionX) { newPos.x = map.DimensionX - 1; }
-                            if (newPos.y < 0) { newPos.y = 0; }
-                            if (newPos.y >= map.DimensionY) { newPos.y = map.DimensionY - 1; }
-                            //if (map.gameBoard[newPos.x, newPos.y] == 2)
-                            //{
-                            foreach (Colony col in Simulation.colonies)
+                        if (newPos.x < 0) { newPos.x = 0; }
+                        if (newPos.x >= map.DimensionX) { newPos.x = map.DimensionX - 1; }
+                        if (newPos.y < 0) { newPos.y = 0; }
+                        if (newPos.y >= map.DimensionY) { newPos.y = map.DimensionY - 1; }
+                        //if (map.gameBoard[newPos.x, newPos.y] == 2)
+                        //{
+                        foreach (Colony col in Simulation.colonies)
+                        {
+                            foreach (Anthill ah in col.anthills)
                             {
-                                foreach (Anthill ah in col.anthills)
+                                foreach (Ant ant in ah.ants)
                                 {
-                                    foreach (Ant ant in ah.ants)
+                                    if (ant.getPos().x == getPos().x && ant.getPos().y == getPos().y && ant.standingOnValue != 2 && ant.standingOnValue != 5)
                                     {
-                                        if (ant.getPos().x == getPos().x && ant.getPos().y == getPos().y && ant.standingOnValue != 2)
-                                        {
 
-                                            standingOnValue = ant.standingOnValue;
-                                        }
+                                        standingOnValue = ant.standingOnValue;
                                     }
                                 }
                             }
+                        }
+                        if (!dead)
+                        {
                             map.gameBoard[pos.x, pos.y] = standingOnValue;
+                        }
+                        else {
+                            map.gameBoard[pos.x, pos.y] = 0;
+                        }
                             standingOnValue = map.gameBoard[newPos.x, newPos.y];
                             //}
                             //else

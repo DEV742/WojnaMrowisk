@@ -25,6 +25,8 @@ namespace WojnaMrowisk
             return col;
         }
         private float maxDistFromAnthill = 40f;
+        public int ID;
+        public bool coldead = false;
         public float distFromAnthill
         {
             get { return maxDistFromAnthill; }
@@ -32,25 +34,40 @@ namespace WojnaMrowisk
         }
         private float reprodRate = 10f;
         public List<Anthill> anthills = new List<Anthill>();
-        void die()
+        void die(Map map)
         {
-
+            Simulation.colonies.Remove(this);
+            coldead = true;
+            if (anthills.Count > 0) {
+                foreach (Anthill ah in anthills) {
+                    ah.destroy(map);
+                }
+            }
         }
 
         public void evaluateColonyLogic(Map map)
         {
+            int i = 0;
             foreach (Anthill ah in anthills.ToArray()) {
-                if (ah.Hunger > 90 && ah.queen != null && ah.ants.Count > 1 && ah.Size == ah.sizes.GetLength(0) - 1 && Simulation.step % 75 == 0) {
-                    foreach (Ant a in ah.ants.ToArray()) {
+                if (ah.Hunger > 85 && ah.queen != null && ah.ants.Count > 1 && ah.Size == ah.sizes.GetLength(0) - 1 && Simulation.step % 75 == 0) {
+                    /*foreach (Ant a in ah.ants.ToArray()) {
                         if (a.stOnV == 0) {
                             Pos spawnPos = new Pos();
                             spawnPos = a.getPos();
                             break;
                         }
 
-                    }
+                    }*/
                     spawnAnthill(map);
                 }
+                if (!ah.dead)
+                {
+                    i++;
+                }
+            }
+            if (i == 0 && !coldead && Simulation.step > 5)
+            {
+                die(map);
             }
         }
         public void spawnAnthill(Map map) {
@@ -100,6 +117,8 @@ namespace WojnaMrowisk
             }
             anthills.Add(a);
             a.Pos = pos;
+            a.colId = ID;
+            a.init(map, a);
         }
         public void initialize(Map map)
         { //automatically create an anthill at a random spot and place a queen
@@ -149,6 +168,7 @@ namespace WojnaMrowisk
             }
             anthills.Add(a);
             a.Pos = pos;
+            a.colId = ID;
             a.init(map, a);
         }
     }

@@ -75,6 +75,17 @@ namespace WojnaMrowisk
                 for (int x = 0; x < anthill.sizes.GetLength(1); x++)
                 {
                         gameBoard[anthill.Pos.x + y, anthill.Pos.y + x] = 0;
+                    if (gameBoard[anthill.Pos.x + y, anthill.Pos.y + x] == 2) {
+                        foreach (Colony col in Simulation.colonies) {
+                            foreach (Anthill ah in col.anthills) {
+                                foreach (Ant a in ah.ants) {
+                                    if (a.getPos().x == anthill.Pos.x + y && a.getPos().y == anthill.Pos.y + x) {
+                                        a.stOnV = 0;
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             }
         }

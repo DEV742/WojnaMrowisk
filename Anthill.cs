@@ -24,9 +24,10 @@ namespace WojnaMrowisk
             get { return hunger; }
             set { hunger = value; }
         }
-        bool dead = false;
+        public bool dead = false;
         private int numUnits = 0;
         private int size = 0;
+        public int colId;
         public int Size {
             get { return size; }
             set { size = value; }
@@ -79,7 +80,7 @@ namespace WojnaMrowisk
             if (queen != null)
             {
                 if (Simulation.step % 2 == 0 && hunger > 0) {
-                    hunger -= (int)MathF.Round((ants.Count * (size+1))/2);
+                    hunger -= (int)MathF.Round((ants.Count)/(2.3f * (size + 1)));
                 }
                 if (hunger > 50 && ants.Count > size+1 * 4 && Simulation.step % 40 == 0 && size < sizes.GetLength(0)-1)//upgrading an anthill
                 {
@@ -91,6 +92,22 @@ namespace WojnaMrowisk
                             if (map.DimensionX > position.x + y && map.DimensionY > position.y + x)
                             {
                                 map.gameBoard[position.x + y, position.y + x] = sizes[getSize(), x, y];
+                                if (map.gameBoard[Pos.x + y, Pos.y + x] == 2)
+                                {
+                                    foreach (Colony col in Simulation.colonies)
+                                    {
+                                        foreach (Anthill ah in col.anthills)
+                                        {
+                                            foreach (Ant a in ah.ants)
+                                            {
+                                                if (a.getPos().x == Pos.x + y && a.getPos().y == Pos.y + x)
+                                                {
+                                                    a.stOnV = sizes[getSize(), x, y];
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
@@ -100,7 +117,16 @@ namespace WojnaMrowisk
                     spawnAnt(map, this, false);
                 }
             }
-            else { 
+            else {
+                if (!dead)
+                {
+                    destroy(map);
+                }
+            }
+            if (ants.Count == 1 && !dead && queen != null && hunger < 25) {
+                destroy(map);
+            }
+            if (ants.Count == 0 && !dead) {
                 destroy(map);
             }
         }
@@ -168,8 +194,8 @@ namespace WojnaMrowisk
             }
             ants.Add(ant);
         }
-        public Colony getColony() { 
-            return this;
+        public int getColonyID() { 
+            return colId;
         }
     }
 }

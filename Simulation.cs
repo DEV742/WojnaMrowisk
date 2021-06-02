@@ -13,10 +13,11 @@ namespace WojnaMrowisk
         public static List<Fight> fights = new List<Fight>();
         public static List<ConsoleColor> colorsUsed = new List<ConsoleColor>();
         private Map map = new Map();
-        private Colony col1 = new Colony();
-        public Pos antTarget = new Pos();
+        //private Colony col1 = new Colony();
+        //public Pos antTarget = new Pos();
         public Menu menu = new Menu();
         public Food food = new Food();
+        public int colID = 0;
         public List<Obstacle> obstacles = new List<Obstacle>();
         public Map getMap() {
             return map;
@@ -52,6 +53,7 @@ namespace WojnaMrowisk
             for (int i=0;i<amount;i++)
             {
                 addColony();
+                colID++;
             }
             
         }
@@ -81,7 +83,7 @@ namespace WojnaMrowisk
                 }
                 if (key.Key == ConsoleKey.D && !paused)//delete colony
                 {
-                    colonies[0].anthills[0].destroy(map);
+                    colonies[1].anthills[0].destroy(map);
                 }
             }
             
@@ -96,7 +98,7 @@ namespace WojnaMrowisk
                     {
                         if (!a.dead)
                         {
-                            a.evaluateLogic(map, antTarget);
+                            a.evaluateLogic(map);
                            // Thread.Sleep(10);
                         }
                         Thread.Sleep(10);
@@ -265,6 +267,7 @@ namespace WojnaMrowisk
         void addColony() {
             Colony col = new Colony();
             colonies.Add(col);
+            col.ID = colID;
             col.initialize(map);
         }
         //public void UpdateGraphics()
