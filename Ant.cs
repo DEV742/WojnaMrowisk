@@ -53,7 +53,7 @@ namespace WojnaMrowisk
         private Pos target;
         public bool isQueen;
         public bool dead = false;
-
+        public AntStatistics antStats;
         public List<Ant> antsAround = new List<Ant>();
         public List<Ant> enemyAntsAround = new List<Ant>();
         public List<Ant> queens = new List<Ant>();
@@ -101,6 +101,14 @@ namespace WojnaMrowisk
             startMovementVector = null;
             target = null;
             t = 0;
+        }
+        public void WriteAntStats() {
+            if (dead) {
+                antStats.timeOfDeath = Simulation.step.ToString();
+            }
+            else {
+                antStats.timeOfDeath = "victorious";
+            }
         }
         public void evaluateLogic(Map map)
         {
@@ -357,7 +365,7 @@ namespace WojnaMrowisk
         {
             pos = position;
         }
-        public void die(Map map)
+        public void dieAnt(Map map)
         {
             if (!dead) { 
                 dead = true;
@@ -366,6 +374,7 @@ namespace WojnaMrowisk
                     antsAnthill.queen = null;
                 }
                 map.gameBoard[getPos().x, getPos().y] = standingOnValue;
+                antStats.timeOfDeath = Simulation.step.ToString();
                 antsAnthill.ants.Remove(this);
             }
         }

@@ -34,6 +34,8 @@ namespace WojnaMrowisk
         }
         private float reprodRate;
         public Ant queen;
+       public  int antsMax;
+        public int timeCreated;
         private Pos position;
         public Pos Pos
         {
@@ -52,18 +54,21 @@ namespace WojnaMrowisk
             ps.y = position.y + 2;
             return ps;
         }
+
+        public AnthillStatistics ahStats;
         public void destroy(Map map)
         {
             if (!dead)
             {
                 dead = true;
+                WriteStatistics();
                 map.destroyAnthill(this);
                 foreach (Ant ant in ants.ToArray())
                 {
-                    ant.die(map);
+                    ant.dieAnt(map);
                 }
                 anthills.Remove(this);
-                die(map);
+                //die(map);
             }
         }
         void grow()
@@ -71,8 +76,24 @@ namespace WojnaMrowisk
             size++;
         }
 
+        public void WriteStatistics() {
+            ahStats.ahColId = colId;
+            ahStats.ahId = getAnthillID();
+            ahStats.maxAntsNum = antsMax;
+            ahStats.size = size;
+            ahStats.timeOfCreation = timeCreated;
+            if (dead) {
+                ahStats.timeOfDeath = Simulation.step.ToString() ;
+            }
+            else {
+                ahStats.timeOfDeath = "victorious";
+            }
+        }
         public void evaluateAnthillLogic(Map map)
         {
+            if (antsMax < ants.Count) {
+                antsMax = ants.Count;
+            }
             if (hunger > 100) {
                 hunger = 100;
             }
@@ -128,10 +149,6 @@ namespace WojnaMrowisk
             if (ants.Count == 0 && !dead) {
                 destroy(map);
             }
-            if (Simulation.step>20 && ants.Count == 1)
-            {
-                destroy(map);
-            }
         }
         public void init(Map map, Anthill a)
         {
@@ -143,9 +160,12 @@ namespace WojnaMrowisk
             Pos posToSpawn = new Pos();
             posToSpawn.x = getAhPos().x; posToSpawn.y = getAhPos().y;
             Random random = new Random();
+            
             int antClass = random.Next(1,100);
             Console.Write(antClass);
             Ant ant = new Ant();
+            ant.antStats = new AntStatistics();
+            Simulation.antStats.Add(ant.antStats);
             ant.setPos(posToSpawn);
             ant.Health = 100;
             ant.stOnV = 4;
@@ -195,10 +215,33 @@ namespace WojnaMrowisk
                 ant.Damage = 0;
                 queen = ant;
             }
+            ant.antStats.colId = getColonyID();
+            ant.antStats.ahId = getAnthillID();
+            ant.antStats.timeCreated = Simulation.step;
+            ant.antStats.speed = ant.Speed;
+            ant.antStats.maxHealth = ant.Health;
+            ant.antStats.maxDamage = ant.Damage;
+            ant.antStats.visRange = ant.visRange;
+            ant.antStats.foodRange = ant.foodRange;
+            ant.antStats.isQueen = ant.isQueen;
             ants.Add(ant);
         }
         public int getColonyID() { 
             return colId;
+        }
+        public int getAnthillID()
+        {
+            int id = 0;
+            int i = 0;
+            foreach (Colony col in Simulation.colonies) {
+                foreach (Anthill ah in col.anthills) { 
+                    if(ah == this) {
+                        id = i;
+                    }
+                    i++;
+                }
+            }
+            return id;
         }
     }
 }

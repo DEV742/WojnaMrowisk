@@ -45,7 +45,7 @@ namespace WojnaMrowisk
                 }
                 antB.State = "wandering";
                 victorious = antB;
-                antA.die(gMap);
+                antA.dieAnt(gMap);
                 endFight(gMap);
             }
             if (antB.Health > 0)
@@ -62,14 +62,17 @@ namespace WojnaMrowisk
                     //destroy antB
                 }
                 antA.State = "wandering";
-                antB.die(gMap);
+                antB.dieAnt(gMap);
                 victorious = antA;
                 endFight(gMap);
             }
         }
         void endFight(Map map) {
-            map.gameBoard[position.x, position.y] = standingOnValue;
-            victorious.stOnV = standingOnValue;
+            if (standingOnValue != 2)
+            {
+                map.gameBoard[position.x, position.y] = standingOnValue;
+                victorious.stOnV = standingOnValue;
+            }
             Simulation.fights.Remove(this);
             
         }

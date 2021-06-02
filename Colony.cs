@@ -26,27 +26,53 @@ namespace WojnaMrowisk
         }
         private float maxDistFromAnthill = 40f;
         public int ID;
+        public ColonyStatistics colSt;
         public bool coldead = false;
+        int maxAnthills;
+        int maxAnts;
         public float distFromAnthill
         {
             get { return maxDistFromAnthill; }
             set { maxDistFromAnthill = value; }
         }
-        private float reprodRate = 10f;
+        //private float reprodRate = 10f;
         public List<Anthill> anthills = new List<Anthill>();
         public void die(Map map)
         {
             Simulation.colonies.Remove(this);
+            //if(!coldead) colSt.timeOfDeath = Simulation.step.ToString();
             coldead = true;
+            WriteStats();
             if (anthills.Count > 0) {
                 foreach (Anthill ah in anthills) {
                     ah.destroy(map);
                 }
             }
         }
-
+        public void WriteStats() {
+            colSt.maxAnthillsNum = maxAnthills;
+            colSt.maxAntsNum = maxAnts;
+            colSt.colID = ID;
+            if (coldead)
+            {
+                colSt.timeOfDeath = Simulation.step.ToString();
+            }
+            else {
+                colSt.timeOfDeath = "victorious";
+            }
+        }
         public void evaluateColonyLogic(Map map)
         {
+            if (maxAnthills < anthills.Count) {
+                maxAnthills = anthills.Count;
+            }
+            int ma = 0;
+            foreach (Anthill ah in anthills) {
+                ma += ah.antsMax;
+            }
+            if (maxAnts < ma) {
+                maxAnts = ma;
+            }
             int i = 0;
             foreach (Anthill ah in anthills.ToArray()) {
                 if (ah.Hunger > 85 && ah.queen != null && ah.ants.Count > 1 && ah.Size == ah.sizes.GetLength(0) - 1 && Simulation.step % 75 == 0) {
@@ -67,13 +93,18 @@ namespace WojnaMrowisk
             }
             if (i == 0 && !coldead && Simulation.step > 5)
             {
+
                 die(map);
             }
         }
         public void spawnAnthill(Map map) {
             Anthill a = new Anthill();
+            a.ahStats = new AnthillStatistics();
             Pos pos = map.pickRandomPoint();
             bool overlaps = true;
+
+            a.timeCreated = Simulation.step;
+            Simulation.ahStats.Add(a.ahStats);
             bool test = false;
             while (overlaps)
             {
@@ -124,6 +155,10 @@ namespace WojnaMrowisk
         { //automatically create an anthill at a random spot and place a queen
             color = getRandomColor();
             Anthill a = new Anthill();
+            a.ahStats = new AnthillStatistics();
+            a.timeCreated = Simulation.step;
+            Simulation.ahStats.Add(a.ahStats);
+            colSt = new ColonyStatistics();
             Pos pos = map.pickRandomPoint();
             bool overlaps = true;
             bool test = false;
@@ -170,6 +205,7 @@ namespace WojnaMrowisk
             a.Pos = pos;
             a.colId = ID;
             a.init(map, a);
+            colSt.colID = ID;
         }
     }
 }
