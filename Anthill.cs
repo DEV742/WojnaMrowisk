@@ -24,6 +24,7 @@ namespace WojnaMrowisk
             get { return hunger; }
             set { hunger = value; }
         }
+        bool dead = false;
         private int numUnits = 0;
         private int size = 0;
         public int Size {
@@ -31,8 +32,8 @@ namespace WojnaMrowisk
             set { size = value; }
         }
         private float reprodRate;
-        private Pos position;
         public Ant queen;
+        private Pos position;
         public Pos Pos
         {
             get { return position; }
@@ -52,9 +53,17 @@ namespace WojnaMrowisk
         }
         public void destroy(Map map)
         {
-            Console.WriteLine("ded");
-            map.destroyAnthill(this);
-            anthills.Remove(this);
+            if (!dead)
+            {
+                dead = true;
+                map.destroyAnthill(this);
+                foreach (Ant ant in ants.ToArray())
+                {
+                    ant.die(map);
+                }
+                anthills.Remove(this);
+                die();
+            }
         }
         void grow()
         {
@@ -69,7 +78,7 @@ namespace WojnaMrowisk
             if (queen != null)
             {
                 if (Simulation.step % 2 == 0 && hunger > 0) {
-                    hunger -= (int)MathF.Round(ants.Count/2);
+                    hunger -= (int)MathF.Round((ants.Count * (size+1))/2);
                 }
                 if (hunger > 50 && ants.Count > size+1 * 4 && Simulation.step % 40 == 0 && size < sizes.GetLength(0)-1)//upgrading an anthill
                 {
@@ -91,6 +100,10 @@ namespace WojnaMrowisk
                 }
             }
             else { 
+                destroy(map);
+            }
+            if (Simulation.step>20 && ants.Count == 1)
+            {
                 destroy(map);
             }
         }
@@ -153,6 +166,7 @@ namespace WojnaMrowisk
             map.gameBoard[posToSpawn.x, posToSpawn.y] = 2;
             ant.isQueen = isQueen;
             if (isQueen) {
+                ant.Damage = 0;
                 queen = ant;
             }
             ants.Add(ant);
