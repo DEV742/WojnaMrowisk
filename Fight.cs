@@ -68,11 +68,8 @@ namespace WojnaMrowisk
             }
         }
         void endFight(Map map) {
-            if (standingOnValue != 2)
-            {
-                map.gameBoard[position.x, position.y] = standingOnValue;
+                map.gameBoard[position.x, position.y] = 0;
                 victorious.stOnV = standingOnValue;
-            }
             Simulation.fights.Remove(this);
             
         }

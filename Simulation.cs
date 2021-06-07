@@ -79,6 +79,7 @@ namespace WojnaMrowisk
                 }
                 if (key.Key == ConsoleKey.A)//add a colony with default stats
                 {
+                    colID++;
                     addColony();
                 }
                 if (key.Key == ConsoleKey.R && !paused)//respawn food
@@ -145,7 +146,7 @@ namespace WojnaMrowisk
                     }
                     if (map.gameBoard[x, y] == 2) {
                         ConsoleColor c = ConsoleColor.Magenta;
-                        char symbol = '$';
+                        char symbol = ' ';
                         foreach (Colony col in colonies)
                         {
                             foreach (Anthill ah in col.anthills)
@@ -161,6 +162,13 @@ namespace WojnaMrowisk
                                         else if (a.State == "fighting" || a.dead)
                                         {
                                             symbol = ' ';
+                                        }
+                                        else if (col == null)
+                                        {
+                                            symbol = ' ';
+                                        }
+                                        else {
+                                            symbol = '$';
                                         }
                                     }
                                 }

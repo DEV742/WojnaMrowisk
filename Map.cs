@@ -74,7 +74,6 @@ namespace WojnaMrowisk
             {
                 for (int x = 0; x < anthill.sizes.GetLength(1); x++)
                 {
-                        gameBoard[anthill.Pos.x + y, anthill.Pos.y + x] = 0;
                     if (gameBoard[anthill.Pos.x + y, anthill.Pos.y + x] == 2) {
                         foreach (Colony col in Simulation.colonies) {
                             foreach (Anthill ah in col.anthills) {
@@ -86,6 +85,7 @@ namespace WojnaMrowisk
                             }
                         }
                     }
+                    gameBoard[anthill.Pos.x + y, anthill.Pos.y + x] = 0;
                 }
             }
         }
@@ -117,9 +117,11 @@ namespace WojnaMrowisk
         {
             Food sfood = new Food();
             Pos positionToSpawn = pickRandomPoint();
-            while (gameBoard[positionToSpawn.x, positionToSpawn.y] != 0)
+            int i = 0;
+            while (gameBoard[positionToSpawn.x, positionToSpawn.y] != 0 && i < 20)
             {
                 positionToSpawn = pickRandomPoint();
+                i++;
             }
             sfood.setPos(positionToSpawn.x, positionToSpawn.y);
             gameBoard[positionToSpawn.x, positionToSpawn.y] = 10;

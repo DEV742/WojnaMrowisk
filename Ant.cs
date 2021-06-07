@@ -6,7 +6,7 @@ namespace WojnaMrowisk
 {
     class Ant : Anthill
     {
-        private float speed = 0.7f;
+        private float speed = 0.6f;
         public float Speed
         {
             get { return speed; }
@@ -325,7 +325,7 @@ namespace WojnaMrowisk
                                 {
                                     target = map.pickRandomPoint();
 
-                                    while (Vector.CreateVector(antsAnthill.getAhPos(), target).distance() > antsAnthill.distFromAnthill || !checkForObstacle(map, target))
+                                    while (Vector.CreateVector(antsAnthill.getAhPos(), target).distance() > antsAnthill.distFromAnthill || (!checkForObstacle(map, target)&&standingOnValue!=1))
                                     {
                                         target = map.pickRandomPoint();
                                     }
@@ -373,7 +373,7 @@ namespace WojnaMrowisk
                 {
                     antsAnthill.queen = null;
                 }
-                map.gameBoard[getPos().x, getPos().y] = standingOnValue;
+                map.gameBoard[getPos().x, getPos().y] = 0;
                 antStats.timeOfDeath = Simulation.step.ToString();
                 antsAnthill.ants.Remove(this);
             }

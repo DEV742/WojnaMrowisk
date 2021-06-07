@@ -106,8 +106,10 @@ namespace WojnaMrowisk
             a.timeCreated = Simulation.step;
             Simulation.ahStats.Add(a.ahStats);
             bool test = false;
-            while (overlaps)
+            int i = 0;
+            while (overlaps && i < 40)
             {
+                i++;
                 test = false;
                 for (int y = 0; y < a.sizes.GetLength(2); y++)
                 {
@@ -162,8 +164,10 @@ namespace WojnaMrowisk
             Pos pos = map.pickRandomPoint();
             bool overlaps = true;
             bool test = false;
-            while (overlaps)
+            int i = 0;
+            while (overlaps && i < 40)
             {
+                i++;
                 test = false;
                 for (int y = 0; y < a.sizes.GetLength(2); y++)
                 {
