@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WojnaMrowisk
+﻿namespace WojnaMrowisk
 {
-    class ColonyStatistics
+    internal class ColonyStatistics
     {
         public int colID;
         public int maxAnthillsNum;

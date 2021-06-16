@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\stepp\\Documents\\Mrowiska\\WojnaMrowisk\\WojnaMrowisk.csproj": {}
+    "C:\\Users\\Prius\\source\\finalfianls\\WojnaMrowisk\\WojnaMrowisk.csproj": {}
   },
   "projects": {
-    "C:\\Users\\stepp\\Documents\\Mrowiska\\WojnaMrowisk\\WojnaMrowisk.csproj": {
+    "C:\\Users\\Prius\\source\\finalfianls\\WojnaMrowisk\\WojnaMrowisk.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\stepp\\Documents\\Mrowiska\\WojnaMrowisk\\WojnaMrowisk.csproj",
+        "projectUniqueName": "C:\\Users\\Prius\\source\\finalfianls\\WojnaMrowisk\\WojnaMrowisk.csproj",
         "projectName": "WojnaMrowisk",
-        "projectPath": "C:\\Users\\stepp\\Documents\\Mrowiska\\WojnaMrowisk\\WojnaMrowisk.csproj",
-        "packagesPath": "C:\\Users\\stepp\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\stepp\\Documents\\Mrowiska\\WojnaMrowisk\\obj\\",
+        "projectPath": "C:\\Users\\Prius\\source\\finalfianls\\WojnaMrowisk\\WojnaMrowisk.csproj",
+        "packagesPath": "C:\\Users\\Prius\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Prius\\source\\finalfianls\\WojnaMrowisk\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\stepp\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Prius\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -49,22 +49,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[3.1.10, 3.1.10]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[3.1.12, 3.1.12]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.103\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.203\\RuntimeIdentifierGraph.json"
         }
       }
     }

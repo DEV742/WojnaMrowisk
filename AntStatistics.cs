@@ -1,20 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WojnaMrowisk
+﻿namespace WojnaMrowisk
 {
-    class AntStatistics
+    internal class AntStatistics
     {
-        public int maxHealth;
+        public int ahId;
+        public int colId;
+        public float FoodRange;
+        public bool isQueen;
         public int maxDamage;
-        public float visRange;
-        public float foodRange;
+        public int maxHealth;
         public float speed;
         public int timeCreated;
         public string timeOfDeath;
-        public int ahId;
-        public int colId;
-        public bool isQueen;
+        public float VisRange;
     }
 }

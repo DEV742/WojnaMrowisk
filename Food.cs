@@ -1,34 +1,21 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WojnaMrowisk
+﻿namespace WojnaMrowisk
 {
-    class Food
+    internal class Food
     {
         public static int partsValue = 20;
-        private int numParts;
-        public int foodParts {
-            get { return numParts; }
-            set { numParts = value; }
-        }
-        private Pos position = new Pos();
+        private readonly Pos position = new Pos();
 
-        void destroy()
-        {
-
-        }
-
-        public void setPos(int x, int y)
+        public int foodParts { get; set; }
+        
+        public void SetPos(int x, int y)
         {
             position.x = x;
             position.y = y;
         }
-        public Pos getPos()
+
+        public Pos GetPos()
         {
-            Pos pos = new Pos();
-            pos.x = position.x;
-            pos.y = position.y;
+            var pos = new Pos {x = position.x, y = position.y};
             return pos;
         }
     }

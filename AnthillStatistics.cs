@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WojnaMrowisk
+﻿namespace WojnaMrowisk
 {
-    class AnthillStatistics
+    internal class AnthillStatistics
     {
         public int ahColId;
         public int ahId;

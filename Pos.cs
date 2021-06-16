@@ -1,22 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WojnaMrowisk
+﻿namespace WojnaMrowisk
 {
-    class Pos
+    internal class Pos
     {
-        private int posX;
-        private int posY;
-        public int x
-        {
-            get { return posX; }
-            set { posX = value; }
-        }
-        public int y
-        {
-            get { return posY; }
-            set { posY = value; }
-        }
+        public int x { get; set; }
+
+        public int y { get; set; }
     }
 }

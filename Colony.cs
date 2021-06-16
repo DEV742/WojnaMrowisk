@@ -1,21 +1,31 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace WojnaMrowisk
 {
-    class Colony
+    internal class Colony
     {
+        //private float reprodRate = 10f;
+        public List<Anthill> anthills = new List<Anthill>();
+        public bool coldead;
         public ConsoleColor color;
+        public ColonyStatistics colSt;
+        public int ID;
+        private int maxAnthills;
+        private int maxAnts;
 
-        public ConsoleColor getRandomColor() {
+        public float distFromAnthill { get; set; } = 40f;
+
+        public ConsoleColor getRandomColor()
+        {
             var consoleColors = Enum.GetValues(typeof(ConsoleColor));
 
-            ConsoleColor col = (ConsoleColor)consoleColors.GetValue(rand.generate(0, consoleColors.Length));
-            int i = 0;
-            while (col == ConsoleColor.Black || Simulation.colorsUsed.Contains(col)) {
+            var col = (ConsoleColor) consoleColors.GetValue(rand.generate(0, consoleColors.Length));
+            var i = 0;
+            while (col == ConsoleColor.Black || Simulation.colorsUsed.Contains(col))
+            {
                 i++;
-                col = (ConsoleColor)consoleColors.GetValue(rand.generate(0, consoleColors.Length));
+                col = (ConsoleColor) consoleColors.GetValue(rand.generate(0, consoleColors.Length));
 
                 if (i == 10) break;
             }
@@ -24,191 +34,130 @@ namespace WojnaMrowisk
 
             return col;
         }
-        private float maxDistFromAnthill = 40f;
-        public int ID;
-        public ColonyStatistics colSt;
-        public bool coldead = false;
-        int maxAnthills;
-        int maxAnts;
-        public float distFromAnthill
-        {
-            get { return maxDistFromAnthill; }
-            set { maxDistFromAnthill = value; }
-        }
-        //private float reprodRate = 10f;
-        public List<Anthill> anthills = new List<Anthill>();
+
         public void die(Map map)
         {
             Simulation.colonies.Remove(this);
             //if(!coldead) colSt.timeOfDeath = Simulation.step.ToString();
             coldead = true;
             WriteStats();
-            if (anthills.Count > 0) {
-                foreach (Anthill ah in anthills) {
-                    ah.destroy(map);
-                }
-            }
+            if (anthills.Count > 0)
+                foreach (var ah in anthills)
+                    ah.Destroy(map);
         }
-        public void WriteStats() {
+
+        public void WriteStats()
+        {
             colSt.maxAnthillsNum = maxAnthills;
             colSt.maxAntsNum = maxAnts;
             colSt.colID = ID;
-            if (coldead)
-            {
-                colSt.timeOfDeath = Simulation.step.ToString();
-            }
-            else {
-                colSt.timeOfDeath = "victorious";
-            }
+            colSt.timeOfDeath = coldead ? Simulation.step.ToString() : "victorious";
         }
+
         public void evaluateColonyLogic(Map map)
         {
-            if (maxAnthills < anthills.Count) {
-                maxAnthills = anthills.Count;
-            }
-            int ma = 0;
-            foreach (Anthill ah in anthills) {
-                ma += ah.antsMax;
-            }
-            if (maxAnts < ma) {
-                maxAnts = ma;
-            }
-            int i = 0;
-            foreach (Anthill ah in anthills.ToArray()) {
-                if (ah.Hunger > 85 && ah.queen != null && ah.ants.Count > 1 && ah.Size == ah.sizes.GetLength(0) - 1 && Simulation.step % 75 == 0) {
-                    /*foreach (Ant a in ah.ants.ToArray()) {
-                        if (a.stOnV == 0) {
+            if (maxAnthills < anthills.Count) maxAnthills = anthills.Count;
+            var ma = 0;
+            foreach (var ah in anthills) ma += ah.antsMax;
+            if (maxAnts < ma) maxAnts = ma;
+            var i = 0;
+            foreach (var ah in anthills.ToArray())
+            {
+                if (ah.Hunger > 85 && ah.queen != null && ah.ants.Count > 1 && ah.Size == ah.sizes.GetLength(0) - 1 &&
+                    Simulation.step % 75 == 0) /*foreach (Ant a in ah.ants.ToArray()) {
+                        if (a.CurrentlyStandingOn == 0) {
                             Pos spawnPos = new Pos();
-                            spawnPos = a.getPos();
+                            spawnPos = a.GetPos();
                             break;
                         }
 
                     }*/
                     spawnAnthill(map);
-                }
-                if (!ah.dead)
-                {
-                    i++;
-                }
+                if (!ah.dead) i++;
             }
-            if (i == 0 && !coldead && Simulation.step > 5)
-            {
 
-                die(map);
-            }
+            if (i == 0 && !coldead && Simulation.step > 5) die(map);
         }
-        public void spawnAnthill(Map map) {
-            Anthill a = new Anthill();
-            a.ahStats = new AnthillStatistics();
-            Pos pos = map.pickRandomPoint();
-            bool overlaps = true;
+
+        public void spawnAnthill(Map map)
+        {
+            var a = new Anthill {ahStats = new AnthillStatistics()};
+            var pos = map.pickRandomPoint();
+            var overlaps = true;
 
             a.timeCreated = Simulation.step;
             Simulation.ahStats.Add(a.ahStats);
-            bool test = false;
-            int i = 0;
+            var i = 0;
             while (overlaps && i < 40)
             {
                 i++;
-                test = false;
-                for (int y = 0; y < a.sizes.GetLength(2); y++)
-                {
-                    for (int x = 0; x < a.sizes.GetLength(1); x++)
-                    {
-                        if (map.DimensionX > pos.x + y && map.DimensionY > pos.y + x)
-                        {
-                            if (map.gameBoard[pos.x + y, pos.y + x] != 0)
-                            {
-                                test = true;
-                            }
-                        }
-                        else
-                        {
-                            test = true;
-                        }
-                    }
-                }
-                if (test == false)
-                {
-                    overlaps = false;
-                }
-                else
-                {
-                    pos = map.pickRandomPoint();
-                }
-            }
-
-            for (int y = 0; y < a.sizes.GetLength(2); y++)
-            {
-                for (int x = 0; x < a.sizes.GetLength(1); x++)
-                {
+                var test = false;
+                for (var y = 0; y < a.sizes.GetLength(2); y++)
+                for (var x = 0; x < a.sizes.GetLength(1); x++)
                     if (map.DimensionX > pos.x + y && map.DimensionY > pos.y + x)
                     {
-                        map.gameBoard[pos.x + y, pos.y + x] = a.sizes[a.getSize(), x, y];
+                        if (map.gameBoard[pos.x + y, pos.y + x] != 0) test = true;
                     }
-                }
+                    else
+                    {
+                        test = true;
+                    }
+
+                if (test == false)
+                    overlaps = false;
+                else
+                    pos = map.pickRandomPoint();
             }
+
+            for (var y = 0; y < a.sizes.GetLength(2); y++)
+            for (var x = 0; x < a.sizes.GetLength(1); x++)
+                if (map.DimensionX > pos.x + y && map.DimensionY > pos.y + x)
+                    map.gameBoard[pos.x + y, pos.y + x] = a.sizes[a.GetSize(), x, y];
             anthills.Add(a);
             a.Pos = pos;
             a.colId = ID;
-            a.init(map, a);
+            a.Initialise(map);
         }
+
         public void initialize(Map map)
-        { //automatically create an anthill at a random spot and place a queen
+        {
+            //automatically create an anthill at a random spot and place a queen
             color = getRandomColor();
-            Anthill a = new Anthill();
-            a.ahStats = new AnthillStatistics();
-            a.timeCreated = Simulation.step;
+            var a = new Anthill {ahStats = new AnthillStatistics(), timeCreated = Simulation.step};
             Simulation.ahStats.Add(a.ahStats);
             colSt = new ColonyStatistics();
-            Pos pos = map.pickRandomPoint();
-            bool overlaps = true;
-            bool test = false;
-            int i = 0;
+            var pos = map.pickRandomPoint();
+            var overlaps = true;
+            var i = 0;
             while (overlaps && i < 40)
             {
                 i++;
-                test = false;
-                for (int y = 0; y < a.sizes.GetLength(2); y++)
-                {
-                    for (int x = 0; x < a.sizes.GetLength(1); x++)
-                    {
-                        if (map.DimensionX > pos.x + y && map.DimensionY > pos.y + x)
-                        {
-                            if (map.gameBoard[pos.x + y, pos.y + x] != 0)
-                            {
-                                test = true;
-                            }
-                        }
-                        else {
-                            test = true;
-                        }
-                    }
-                }
-                if (test == false)
-                {
-                    overlaps = false;
-                }
-                else
-                {
-                    pos = map.pickRandomPoint();
-                }
-            }
-
-            for (int y = 0; y < a.sizes.GetLength(2); y++)
-            {
-                for (int x = 0; x < a.sizes.GetLength(1); x++)
-                {
+                var test = false;
+                for (var y = 0; y < a.sizes.GetLength(2); y++)
+                for (var x = 0; x < a.sizes.GetLength(1); x++)
                     if (map.DimensionX > pos.x + y && map.DimensionY > pos.y + x)
                     {
-                        map.gameBoard[pos.x + y, pos.y + x] = a.sizes[a.getSize(), x, y];
+                        if (map.gameBoard[pos.x + y, pos.y + x] != 0) test = true;
                     }
-                }
+                    else
+                    {
+                        test = true;
+                    }
+
+                if (test == false)
+                    overlaps = false;
+                else
+                    pos = map.pickRandomPoint();
             }
+
+            for (var y = 0; y < a.sizes.GetLength(2); y++)
+            for (var x = 0; x < a.sizes.GetLength(1); x++)
+                if (map.DimensionX > pos.x + y && map.DimensionY > pos.y + x)
+                    map.gameBoard[pos.x + y, pos.y + x] = a.sizes[a.GetSize(), x, y];
             anthills.Add(a);
             a.Pos = pos;
             a.colId = ID;
-            a.init(map, a);
+            a.Initialise(map);
             colSt.colID = ID;
         }
     }

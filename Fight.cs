@@ -1,77 +1,71 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace WojnaMrowisk
+﻿namespace WojnaMrowisk
 {
-    class Fight
+    internal class Fight
     {
         public Ant antA;
         public Ant antB;
+        private Map gMap;
+        private Pos position;
 
-       public  int standingOnValue;
-        Pos position;
+        public int standingOnValue;
 
-        Ant victorious;
-        Map gMap;
+        private Ant victorious;
 
-        public void StartFight(Ant antOne, Ant antTwo, Map map) {
+        public void StartFight(Ant antOne, Ant antTwo, Map map)
+        {
             antA = antOne;
             antB = antTwo;
-            position = antOne.getPos();
+            position = antOne.GetPos();
             gMap = map;
             Simulation.fights.Add(this);
             //standingOnValue = map.gameBoard[position.x, position.y];
             map.gameBoard[position.x, position.y] = 5;
-            
         }
-       public void evaluateFight() {
-            if (antA.stOnV != 2) {
-                standingOnValue = antA.stOnV;
-            }
-            if (antB.stOnV != 2) {
-                standingOnValue = antB.stOnV;
-            }
-            if (antA.Health > 0)
+
+        public void evaluateFight()
+        {
+            if (antA.CurrentlyStandingOn != 2) standingOnValue = antA.CurrentlyStandingOn;
+            if (antB.CurrentlyStandingOn != 2) standingOnValue = antB.CurrentlyStandingOn;
+            if (antA.Health > 0) antB.Health -= antA.Damage;
+            if (antA.Health <= 0)
             {
-                antB.Health -= antA.Damage;
-            }
-            if(antA.Health <= 0) {
                 //antA dead
-                if (antA.carrying) {
+                if (antA.carrying)
+                {
                     antA.carrying = false;
                     antB.carrying = true;
-                    //destroy antA
+                    //Destroy antA
                 }
+
                 antB.State = "wandering";
                 victorious = antB;
-                antA.dieAnt(gMap);
+                antA.DieAnt(gMap);
                 endFight(gMap);
             }
-            if (antB.Health > 0)
-            {
-                antA.Health -= antB.Damage;
 
-            }
-            if (antB.Health <= 0) {
+            if (antB.Health > 0) antA.Health -= antB.Damage;
+            if (antB.Health <= 0)
+            {
                 //antB dead
                 if (antB.carrying)
                 {
                     antB.carrying = false;
                     antA.carrying = true;
-                    //destroy antB
+                    //Destroy antB
                 }
+
                 antA.State = "wandering";
-                antB.dieAnt(gMap);
+                antB.DieAnt(gMap);
                 victorious = antA;
                 endFight(gMap);
             }
         }
-        void endFight(Map map) {
-                map.gameBoard[position.x, position.y] = 0;
-                victorious.stOnV = standingOnValue;
+
+        private void endFight(Map map)
+        {
+            map.gameBoard[position.x, position.y] = 0;
+            victorious.CurrentlyStandingOn = standingOnValue;
             Simulation.fights.Remove(this);
-            
         }
     }
 }

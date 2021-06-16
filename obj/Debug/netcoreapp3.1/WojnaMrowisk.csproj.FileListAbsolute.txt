@@ -50,3 +50,16 @@ C:\Users\Prius\source\finals\DEV742\WojnaMrowisk\obj\Debug\netcoreapp3.1\WojnaMr
 C:\Users\Prius\source\finals\DEV742\WojnaMrowisk\obj\Debug\netcoreapp3.1\WojnaMrowisk.dll
 C:\Users\Prius\source\finals\DEV742\WojnaMrowisk\obj\Debug\netcoreapp3.1\WojnaMrowisk.pdb
 C:\Users\Prius\source\finals\DEV742\WojnaMrowisk\obj\Debug\netcoreapp3.1\WojnaMrowisk.genruntimeconfig.cache
+C:\Users\Prius\source\finalfianls\WojnaMrowisk\obj\Debug\netcoreapp3.1\WojnaMrowisk.csprojAssemblyReference.cache
+C:\Users\Prius\source\finalfianls\WojnaMrowisk\obj\Debug\netcoreapp3.1\WojnaMrowisk.AssemblyInfoInputs.cache
+C:\Users\Prius\source\finalfianls\WojnaMrowisk\obj\Debug\netcoreapp3.1\WojnaMrowisk.AssemblyInfo.cs
+C:\Users\Prius\source\finalfianls\WojnaMrowisk\obj\Debug\netcoreapp3.1\WojnaMrowisk.csproj.CoreCompileInputs.cache
+C:\Users\Prius\source\finalfianls\WojnaMrowisk\obj\Debug\netcoreapp3.1\WojnaMrowisk.dll
+C:\Users\Prius\source\finalfianls\WojnaMrowisk\obj\Debug\netcoreapp3.1\WojnaMrowisk.pdb
+C:\Users\Prius\source\finalfianls\WojnaMrowisk\bin\Debug\netcoreapp3.1\WojnaMrowisk.exe
+C:\Users\Prius\source\finalfianls\WojnaMrowisk\bin\Debug\netcoreapp3.1\WojnaMrowisk.deps.json
+C:\Users\Prius\source\finalfianls\WojnaMrowisk\bin\Debug\netcoreapp3.1\WojnaMrowisk.runtimeconfig.json
+C:\Users\Prius\source\finalfianls\WojnaMrowisk\bin\Debug\netcoreapp3.1\WojnaMrowisk.runtimeconfig.dev.json
+C:\Users\Prius\source\finalfianls\WojnaMrowisk\bin\Debug\netcoreapp3.1\WojnaMrowisk.dll
+C:\Users\Prius\source\finalfianls\WojnaMrowisk\bin\Debug\netcoreapp3.1\WojnaMrowisk.pdb
+C:\Users\Prius\source\finalfianls\WojnaMrowisk\obj\Debug\netcoreapp3.1\WojnaMrowisk.genruntimeconfig.cache
