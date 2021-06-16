@@ -5,7 +5,6 @@ namespace WojnaMrowisk
 {
     internal class Colony
     {
-        //private float reprodRate = 10f;
         public List<Anthill> anthills = new List<Anthill>();
         public bool coldead;
         public ConsoleColor color;
@@ -38,7 +37,6 @@ namespace WojnaMrowisk
         public void die(Map map)
         {
             Simulation.colonies.Remove(this);
-            //if(!coldead) colSt.timeOfDeath = Simulation.step.ToString();
             coldead = true;
             WriteStats();
             if (anthills.Count > 0)
@@ -64,14 +62,7 @@ namespace WojnaMrowisk
             foreach (var ah in anthills.ToArray())
             {
                 if (ah.Hunger > 85 && ah.queen != null && ah.ants.Count > 1 && ah.Size == ah.sizes.GetLength(0) - 1 &&
-                    Simulation.step % 75 == 0) /*foreach (Ant a in ah.ants.ToArray()) {
-                        if (a.CurrentlyStandingOn == 0) {
-                            Pos spawnPos = new Pos();
-                            spawnPos = a.GetPos();
-                            break;
-                        }
-
-                    }*/
+                    Simulation.step % 75 == 0)
                     spawnAnthill(map);
                 if (!ah.dead) i++;
             }
@@ -121,7 +112,6 @@ namespace WojnaMrowisk
 
         public void initialize(Map map)
         {
-            //automatically create an anthill at a random spot and place a queen
             color = getRandomColor();
             var a = new Anthill {ahStats = new AnthillStatistics(), timeCreated = Simulation.step};
             Simulation.ahStats.Add(a.ahStats);

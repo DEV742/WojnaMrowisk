@@ -16,9 +16,7 @@ namespace WojnaMrowisk
         public List<ColonyStatistics> colStats = new List<ColonyStatistics>();
 
         private readonly Map map = new Map();
-
-        //private Colony col1 = new Colony();
-        //public Pos antTarget = new Pos();
+        
         public Menu menu = new Menu();
         public List<Obstacle> obstacles = new List<Obstacle>();
         private bool paused;
@@ -58,7 +56,6 @@ namespace WojnaMrowisk
         {
             step++;
             if (step % 30 == 0) map.spawnFood();
-            //is called as fast as possible w. 100ms sleep
             if (Console.KeyAvailable)
             {
                 var key = Console.ReadKey();
@@ -90,8 +87,6 @@ namespace WojnaMrowisk
                     foreach (var a in ah.ants.ToArray())
                         if (!a.dead)
                             a.evaluateLogic(map);
-                        // Thread.Sleep(10);
-                    //Thread.Sleep(10);
                 }
             }
 
@@ -104,7 +99,6 @@ namespace WojnaMrowisk
                 Console.Write("||");
                 for (var x = 0; x < map.DimensionX; x++)
                 {
-                    //Console.Write(map.gameBoard[x,y]);
                     if (map.gameBoard[x, y] == 0 || map.gameBoard[x, y] == 7) Console.Write(" ");
                     if (map.gameBoard[x, y] == 10)
                     {
@@ -180,68 +174,10 @@ namespace WojnaMrowisk
                     case 4:
                         Console.Write(" Ilosc kolonii: " + colonies.Count + "\n");
                         break;
-                    /*case 5:
-                        if (map.food != null)
-                        {
-                            Console.Write("Pozycja jedzenia: " + map.food.GetPos().x + "," + map.food.GetPos().y + "\n");
-                        }
-                        else {
-                            Console.Write("\n");
-                        }
-                        break;*/
                     case 6:
                         Console.Write("Steps: " + step + "\n");
                         break;
-                    /*case 7:
-                        Console.Write("Anthill1.Hunger = " + colonies[0].anthills[0].Hunger + "\n");
-                        break;
-                     * ============[Debug stuff]===========
-                    uncomment the Console.Clear thingy below to make it work properly
-
-                     * case 7:
-                        if (colonies[0].anthills[0].ants[0].GetPos() != null)
-                        {
-                            Console.Write("Ant1_Pos: x=" + colonies[0].anthills[0].ants[0].GetPos().x + " y=" + colonies[0].anthills[0].ants[0].GetPos().y + " t=" + colonies[0].anthills[0].ants[0].t + "\n");
-
-                        }
-                        else {
-                            Console.Write("\n");
-                        }
-                        break;
-                    case 8:
-                        if (colonies[0].anthills[0].ants[0].GetPos() != null)
-                        {
-                            Console.Write("Ant1_MTS: " + colonies[0].anthills[0].ants[0].movementTimeStart + " rd=" + colonies[0].anthills[0].ants[0].reachedDestination + "\n");
-
-                        }
-                        else
-                        {
-                            Console.Write("\n");
-                        }
-                        break;
-                    case 9:
-                        if (colonies[0].anthills[0].ants[0].movementVector != null && colonies[0].anthills[0].ants[0].startMovementVector != null)
-                        {
-                            Console.Write("Ant1_VectorsD: mV" + colonies[0].anthills[0].ants[0].movementVector.distance() + " svD=" + colonies[0].anthills[0].ants[0].startMovementVector.distance() + "\n");
-
-                        }
-                        else
-                        {
-                            Console.Write("\n");
-                        }
-                        break;
-                    case 10:
-                        if (colonies[0].anthills[0].ants[0].movementVector != null && colonies[0].anthills[0].ants[0].startMovementVector != null)
-                        {
-                            Console.Write("Ant1_distance: " + ((float)(time.stopwatch.Elapsed.TotalSeconds) - colonies[0].anthills[0].ants[0].movementTimeStart) * (colonies[0].anthills[0].ants[0].Speed) +  "\n");
-
-                        }
-                        else
-                        {
-                            Console.Write("\n");
-                        }
-                        break;
-                    */
+                    
                     default:
                         Console.Write("\n");
                         break;
@@ -265,7 +201,6 @@ namespace WojnaMrowisk
 
                 WriteCSV();
             }
-            //Console.Clear();
         }
 
         private void addColony()
@@ -276,8 +211,7 @@ namespace WojnaMrowisk
             col.initialize(map);
             colStats.Add(col.colSt);
         }
-
-        //public void UpdateGraphics()
+        
         private void WriteCSV()
         {
             using (var writer = new StreamWriter("ColoniesData.csv"))

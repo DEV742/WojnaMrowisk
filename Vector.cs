@@ -19,7 +19,6 @@ namespace WojnaMrowisk
         public float distance()
         {
             return MathF.Sqrt(MathF.Pow(x, 2) + MathF.Pow(y, 2));
-            //return MathF.Sqrt((xPos^2) + (yPos^2));
         }
 
         public static Vector CreateVector(Pos pos1, Pos pos2)

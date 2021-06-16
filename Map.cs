@@ -5,14 +5,7 @@ namespace WojnaMrowisk
     internal class Map
     {
         public static List<Food> foods = new List<Food>();
-        public Pos currentWaypoint = new Pos();
-
-        // = new int[Console.WindowWidth, Console.WindowHeight];
         public Food food;
-
-
-        /*Map idea: every thing has a certain ID, for example, an ant is a 1,
-        a piece of food is 2 etc.*/
         public int[,] gameBoard;
 
         public int DimensionX { get; set; }
@@ -28,7 +21,6 @@ namespace WojnaMrowisk
             gameBoard[positionToSpawn.x, positionToSpawn.y] = 10;
             sfood.foodParts = rand.generate(1, 5);
             foods.Add(sfood);
-            //return sfood;
         }
 
         public void destroyFood(int index)
@@ -65,13 +57,11 @@ namespace WojnaMrowisk
 
         public void spawnObstacles(List<Obstacle> obst)
         {
-            //Random rand = new Random();
             var numObst = rand.generate(5, 15); //spawning between 5 and 15 obstacles
             for (var i = 0; i < numObst; i++)
             {
                 var spawnPos = pickRandomPoint();
                 var randChoice = rand.generate(0, obst.Count);
-                //obst[randChoice];
                 for (var y = 0; y < obst[randChoice].footprint.GetLength(1); y++)
                 for (var x = 0; x < obst[randChoice].footprint.GetLength(0); x++)
                     if (DimensionX > spawnPos.x + y && DimensionY > spawnPos.y + x &&
@@ -83,8 +73,6 @@ namespace WojnaMrowisk
         public Pos pickRandomPoint()
         {
             var position = new Pos {x = rand.generate(0, DimensionX - 1), y = rand.generate(0, DimensionY - 1)};
-            //Random randY = new Random();
-
             return position;
         }
 

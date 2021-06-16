@@ -167,8 +167,6 @@ namespace WojnaMrowisk
                     {
                         Console.WriteLine(minimum[0]);
                         State = "food_going";
-                        //reachedDestination = false;
-                        //startMovementVector = Vector.CreateVector(GetPos(), map.food.GetPos());
 
                         goToFood(map, (int) minimum[0]);
 
@@ -254,7 +252,7 @@ namespace WojnaMrowisk
                                 State = "fighting";
                                 a.State = "fighting";
                             }
-                    } //all of the other states should go with else if here...
+                    }
                     else
                     {
                         //wandering/returning state
@@ -317,10 +315,6 @@ namespace WojnaMrowisk
 
                     if (target != null) move(target, map);
                 }
-                //else {
-                //state = "wander";
-                //move(antTarget, map);
-                //}
             }
         }
 
@@ -370,12 +364,6 @@ namespace WojnaMrowisk
 
         private void move(Pos tpos, Map map)
         {
-            /*Movement ideas
-             [Linear Interpolation]
-
-            f(t) = f0 + ((t - t0)/(t1 - t0))(f1 - f0)
-            */
-
             if (!reachedDestination)
             {
                 if (movementVector != null)
@@ -399,13 +387,9 @@ namespace WojnaMrowisk
                     startMovementVector = movementVector;
                     t = distCovered / startMovementVector.distance();
                 }
-
-                //t = movementVector.distance() / (Speed);
-                //t = Math.Clamp(t, 0, 1);
+                
                 if (pos.x != tpos.x || pos.y != tpos.y)
                 {
-                    //newPos.x = (int)(MathF.Round((1 - t) * pos.x + t * tpos.x));
-                    //newPos.y = (int)(MathF.Round((1 - t) * pos.y + t * tpos.y));
                     newPos.x = (int) Math.Round(startMovementVector.startX +
                                                 t * (startMovementVector.endX - startMovementVector.startX));
                     newPos.y = (int) Math.Round(startMovementVector.startY +
@@ -426,14 +410,6 @@ namespace WojnaMrowisk
                             else
                                 map.gameBoard[pos.x, pos.y] = 0;
                         }
-
-                        /*if (standingOnValue != 10)
-                        {
-                            map.gameBoard[pos.x, pos.y] = standingOnValue;
-                        }
-                        else {
-                            map.gameBoard[pos.x, pos.y] = 0;
-                        }*/
                         CurrentlyStandingOn = map.gameBoard[newPos.x, newPos.y];
                         map.gameBoard[newPos.x, newPos.y] = 2;
                         pos.x = newPos.x;
@@ -445,8 +421,6 @@ namespace WojnaMrowisk
                         if (newPos.x >= map.DimensionX) newPos.x = map.DimensionX - 1;
                         if (newPos.y < 0) newPos.y = 0;
                         if (newPos.y >= map.DimensionY) newPos.y = map.DimensionY - 1;
-                        //if (map.gameBoard[newPos.x, newPos.y] == 2)
-                        //{
                         foreach (var col in Simulation.colonies)
                         foreach (var ah in col.anthills)
                         foreach (var ant in ah.ants)
@@ -458,12 +432,6 @@ namespace WojnaMrowisk
                         else
                             map.gameBoard[pos.x, pos.y] = 0;
                         CurrentlyStandingOn = map.gameBoard[newPos.x, newPos.y];
-                        //}
-                        //else
-                        //{
-                        //   map.gameBoard[pos.x, pos.y] = standingOnValue;
-                        //   standingOnValue = map.gameBoard[newPos.x, newPos.y];
-                        //}
                         map.gameBoard[newPos.x, newPos.y] = 2;
                         pos.x = newPos.x;
                         pos.y = newPos.y;
@@ -472,9 +440,6 @@ namespace WojnaMrowisk
 
                 if (pos.x == tpos.x && pos.y == tpos.y)
                     reachedDestination = true;
-                //t = 0;
-                //movementTimeStart = 0;
-                //startMovementVector = null;
             }
 
             if (reachedDestination && (tpos.x != pos.x || tpos.y != pos.y))
@@ -482,8 +447,6 @@ namespace WojnaMrowisk
                 movementTimeStart = Simulation.step;
                 startMovementVector = Vector.CreateVector(GetPos(), tpos);
                 reachedDestination = false;
-                //movementVector = Vector.CreateVector(GetPos(), tpos);
-                //t = 0;
             }
         }
     }

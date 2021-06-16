@@ -18,7 +18,6 @@
             position = antOne.GetPos();
             gMap = map;
             Simulation.fights.Add(this);
-            //standingOnValue = map.gameBoard[position.x, position.y];
             map.gameBoard[position.x, position.y] = 5;
         }
 

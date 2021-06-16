@@ -11,8 +11,6 @@ namespace WojnaMrowisk
         public int colId;
         public bool dead;
         public Ant queen;
-
-        //private int[,] footprint;
         public int[,,] sizes =
         {
             {
@@ -64,7 +62,6 @@ namespace WojnaMrowisk
                 map.DestroyAnthill(this);
                 foreach (var ant in ants.ToArray()) ant.DieAnt(map);
                 anthills.Remove(this);
-                //Die(map);
             }
         }
         public void WriteStatistics()
