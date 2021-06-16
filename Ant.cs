@@ -45,6 +45,7 @@ namespace WojnaMrowisk
             return pos;
         }
 
+        //Util method to gather a list of ants around, in range of VisRange, to perform further decision making on that data
         public List<Ant> checkForAntsAround()
         {
             var antsAround = new List<Ant>();
@@ -57,6 +58,7 @@ namespace WojnaMrowisk
             return antsAround;
         }
 
+        //Stops the ant from going to its current destination, resets it.
         public void stopMovement()
         {
             reachedDestination = true;
@@ -66,18 +68,27 @@ namespace WojnaMrowisk
             t = 0;
         }
 
+        //Saves ant data to AntStatistics object
         public void WriteAntStats()
         {
             antStats.timeOfDeath = dead ? Simulation.step.ToString() : "victorious";
         }
 
+        /*Evaluates ants logic based on the following factors:
+         * - Ants around
+         * - Food in range
+         * - Is queen?
+         * - Ants state
+         * - Ants' queens around
+         * - Ants carrying food around
+         * */
         public void evaluateLogic(Map map)
         {
             if (Simulation.step > 3)
             {
                 var index = 0;
                 var minimum = new float[2]; //[0] - index [1] - distance
-                foreach (var item in Map.foods)
+                foreach (var item in Map.foods)// checks for the nearest food
                 {
                     var distance = Vector.CreateVector(GetPos(), Map.foods[index].GetPos()).distance();
                     if (index == 0 || minimum[1] > distance)
@@ -94,7 +105,7 @@ namespace WojnaMrowisk
                     antsAround = checkForAntsAround();
                     enemyAntsAround = new List<Ant>();
                     queens = new List<Ant>();
-                    foreach (var ant in antsAround)
+                    foreach (var ant in antsAround)//separates ants from antsAround list into sublists
                     {
                         if (ant.AntsAnthill.GetColonyID() != AntsAnthill.GetColonyID() && !ant.isQueen)
                             enemyAntsAround.Add(ant);
@@ -323,6 +334,7 @@ namespace WojnaMrowisk
             pos = position;
         }
 
+        //Destroys the ant
         public void DieAnt(Map map)
         {
             if (!dead)
@@ -334,6 +346,8 @@ namespace WojnaMrowisk
                 AntsAnthill.ants.Remove(this);
             }
         }
+
+        //Checks for obstacles along the path from the current position to the given position using Linear Interpolation
         public bool checkForObstacle(Map map, Pos tpos)
         {
             float frac;
@@ -362,6 +376,8 @@ namespace WojnaMrowisk
             move(AntsAnthill.GetAhPos(), map);
         }
 
+        //A method for ants movement. Based on Linear Interpolation w. formula x = startPoint.x + (t*startMovementVector);
+        //Every ant objects stores a value of what it(the ant) stands on, and when leaving the current position, it places the StandingOnValue back
         private void move(Pos tpos, Map map)
         {
             if (!reachedDestination)

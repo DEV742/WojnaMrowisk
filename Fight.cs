@@ -11,6 +11,8 @@
 
         private Ant victorious;
 
+        //Resembles a Start() method in the Simulation class
+        //Used to initialise and set up the fight
         public void StartFight(Ant antOne, Ant antTwo, Map map)
         {
             antA = antOne;
@@ -21,6 +23,7 @@
             map.gameBoard[position.x, position.y] = 5;
         }
 
+        //A method used to evaluate logic of the ongoing fight
         public void evaluateFight()
         {
             if (antA.CurrentlyStandingOn != 2) standingOnValue = antA.CurrentlyStandingOn;
@@ -60,6 +63,7 @@
             }
         }
 
+        //A method that finalises the fight, puts it off the map and from simulation
         private void endFight(Map map)
         {
             map.gameBoard[position.x, position.y] = 0;

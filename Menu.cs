@@ -4,20 +4,20 @@ namespace WojnaMrowisk
 {
     internal class Menu
     {
-        public (int dł, int num) menu()
+        public (int dl, int num) menu()
         {
             int num;
             Console.WriteLine("Wojna Mrowisk");
             Console.WriteLine("Mapa jest kwadratowa. Podaj długość boku (min. 20): ");
-            var dł = Convert.ToInt32(Console.ReadLine());
-            while (dł < 20)
+            var dl = Convert.ToInt32(Console.ReadLine());
+            while (dl < 20)
             {
                 Console.WriteLine("Podaj wartość większą niż 10");
-                dł = Convert.ToInt32(Console.ReadLine());
+                dl = Convert.ToInt32(Console.ReadLine());
             }
 
             Console.WriteLine("Podaj ilość kolonii");
-            if (dł <= 60)
+            if (dl <= 60)
             {
                 Console.WriteLine("Ze względu na rozmiar mapy, podaj wartość z zakresu 2-4");
                 num = Convert.ToInt32(Console.ReadLine());
@@ -29,7 +29,7 @@ namespace WojnaMrowisk
             }
             else
             {
-                if (dł <= 100)
+                if (dl <= 100)
                 {
                     Console.WriteLine("Ze względu na rozmiar mapy, podaj wartość z zakresu 2-8");
                     num = Convert.ToInt32(Console.ReadLine());
@@ -51,7 +51,7 @@ namespace WojnaMrowisk
                 }
             }
 
-            return (dł, num);
+            return (dl, num);
         }
     }
 }

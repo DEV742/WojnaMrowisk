@@ -12,6 +12,7 @@ namespace WojnaMrowisk
 
         public int DimensionY { get; set; }
 
+        //A method to spawn food at a random point that is not obstructed
         public void spawnFood()
         {
             var sfood = new Food();
@@ -23,6 +24,7 @@ namespace WojnaMrowisk
             foods.Add(sfood);
         }
 
+        //A method to destroy food and to get it off the map
         public void destroyFood(int index)
         {
             if (gameBoard[foods[index].GetPos().x, foods[index].GetPos().y] != 2)
@@ -40,6 +42,7 @@ namespace WojnaMrowisk
             }
         }
 
+        //A method that removes a specified anthill from the map
         public void DestroyAnthill(Anthill anthill)
         {
             for (var y = 0; y < anthill.sizes.GetLength(2); y++)
@@ -55,6 +58,7 @@ namespace WojnaMrowisk
             }
         }
 
+        //A method that spawns a certain number of obstacles
         public void spawnObstacles(List<Obstacle> obst)
         {
             var numObst = rand.generate(5, 15); //spawning between 5 and 15 obstacles
@@ -70,6 +74,7 @@ namespace WojnaMrowisk
             }
         }
 
+        //A util method to pick a random point within the range of map dimensions
         public Pos pickRandomPoint()
         {
             var position = new Pos {x = rand.generate(0, DimensionX - 1), y = rand.generate(0, DimensionY - 1)};

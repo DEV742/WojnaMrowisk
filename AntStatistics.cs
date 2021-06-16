@@ -12,5 +12,7 @@
         public int timeCreated;
         public string timeOfDeath;
         public float VisRange;
+
+        //Used to store data for AntsData.csv generation
     }
 }

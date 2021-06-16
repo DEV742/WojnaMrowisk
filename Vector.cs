@@ -16,11 +16,13 @@ namespace WojnaMrowisk
 
         public int endY { get; set; }
 
+        //A method to calculate distance.
         public float distance()
         {
             return MathF.Sqrt(MathF.Pow(x, 2) + MathF.Pow(y, 2));
         }
 
+        //A static metod to create a vector, storing not only the vector coordinates, but also the start&end coords.
         public static Vector CreateVector(Pos pos1, Pos pos2)
         {
             var vect = new Vector

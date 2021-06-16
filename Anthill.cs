@@ -11,6 +11,9 @@ namespace WojnaMrowisk
         public int colId;
         public bool dead;
         public Ant queen;
+        //7's are a some sort of place reservation, symbolising that the anthill will eventually grow, so these spaces
+        //cannot be obstructed
+        //All footprints must be the same size(dimensions)
         public int[,,] sizes =
         {
             {
@@ -43,6 +46,7 @@ namespace WojnaMrowisk
             return Size;
         }
 
+        //Returns the position of the current anthill in the middle of it(not in the left-top corner as it is stored in Pos)
         public Pos GetAhPos()
         {
             var ps = new Pos
@@ -53,6 +57,7 @@ namespace WojnaMrowisk
             return ps;
         }
 
+        //Destroys the anthill and kills all ants that live in it
         public void Destroy(Map map)
         {
             if (!dead)
@@ -64,6 +69,8 @@ namespace WojnaMrowisk
                 anthills.Remove(this);
             }
         }
+
+        //Saves stats to the AnthillStatistics object
         public void WriteStatistics()
         {
             ahStats.ahColId = colId;
@@ -74,6 +81,7 @@ namespace WojnaMrowisk
             ahStats.timeOfDeath = dead ? Simulation.step.ToString() : "victorious";
         }
 
+        //Evaluates the anthills logic, checks for hunger, queen well being, number of units
         public void EvaluateAnthillLogic(Map map)
         {
             if (antsMax < ants.Count) antsMax = ants.Count;
@@ -111,12 +119,18 @@ namespace WojnaMrowisk
             if (ants.Count == 0 && !dead) Destroy(map);
         }
 
+        //Initialises the anthill by spawning a queen and a regular ant
         public void Initialise(Map map)
         {
             SpawnAnt(map, false);
             SpawnAnt(map, true);
         }
 
+        //Creates an ant(either a queen or a regular one) with random ant stat-class selection
+        //Created ants can be fighters and gatherers
+        //Fighters are way more aggressive and prefer attacking other ants to gathering
+        //Gatherers are focused mainly on getting food, they are thus faster
+        //Other than that, each ant regardless of its class can get an upgrade, a slight improvement to its current stats
         public void SpawnAnt(Map map, bool isQueen)
         {
             var posToSpawn = new Pos

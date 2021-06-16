@@ -8,5 +8,7 @@
         public int size;
         public int timeOfCreation;
         public string timeOfDeath;
+
+        //Used to store data for AnthillsData.csv generation
     }
 }

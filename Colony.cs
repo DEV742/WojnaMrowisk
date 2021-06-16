@@ -15,6 +15,7 @@ namespace WojnaMrowisk
 
         public float distFromAnthill { get; set; } = 40f;
 
+        //Picks a random color from ConsoleColor enumeration if it is not already in use
         public ConsoleColor getRandomColor()
         {
             var consoleColors = Enum.GetValues(typeof(ConsoleColor));
@@ -34,6 +35,7 @@ namespace WojnaMrowisk
             return col;
         }
 
+        //Wipes the entire colony
         public void die(Map map)
         {
             Simulation.colonies.Remove(this);
@@ -44,6 +46,7 @@ namespace WojnaMrowisk
                     ah.Destroy(map);
         }
 
+        //Saves colony stats to its own ColonyStatistics object
         public void WriteStats()
         {
             colSt.maxAnthillsNum = maxAnthills;
@@ -52,6 +55,7 @@ namespace WojnaMrowisk
             colSt.timeOfDeath = coldead ? Simulation.step.ToString() : "victorious";
         }
 
+        //Evaluates colony logic(anthill spawning, death)
         public void evaluateColonyLogic(Map map)
         {
             if (maxAnthills < anthills.Count) maxAnthills = anthills.Count;
@@ -70,6 +74,7 @@ namespace WojnaMrowisk
             if (i == 0 && !coldead && Simulation.step > 5) die(map);
         }
 
+        //Spawns an anthill at a random point that is not obstructed by anything else
         public void spawnAnthill(Map map)
         {
             var a = new Anthill {ahStats = new AnthillStatistics()};
@@ -110,6 +115,7 @@ namespace WojnaMrowisk
             a.Initialise(map);
         }
 
+        //Initialises the colony, creating one anthill, a queen and an ant
         public void initialize(Map map)
         {
             color = getRandomColor();

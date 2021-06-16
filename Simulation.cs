@@ -37,6 +37,8 @@ namespace WojnaMrowisk
             map.spawnObstacles(obst);
         }
 
+        //Is invoked once when the simulation starts.
+        //Used for the initial setup of simulation.
         private void Start()
         {
             var (size, amount) = menu.menu();
@@ -52,6 +54,9 @@ namespace WojnaMrowisk
             }
         }
 
+        //Is in invoked constantly during simulation runtime, after Start() has been invoked.
+        //Used for evaluating sim logic, updating the map & displaying the simulation
+        //Every cycle is considered a step, thus abandoning the FPS approach.
         private void Update()
         {
             step++;
@@ -77,8 +82,8 @@ namespace WojnaMrowisk
                     colonies[1].anthills[0].Destroy(map);
             }
 
-            foreach (var f in fights.ToArray()) f.evaluateFight();
-            foreach (var col in colonies.ToArray())
+            foreach (var f in fights.ToArray()) f.evaluateFight();//evaluate every ongoing fight
+            foreach (var col in colonies.ToArray())//evaluate logic for every colony,anthill,ant
             {
                 col.evaluateColonyLogic(map);
                 foreach (var ah in col.anthills.ToArray())
@@ -90,6 +95,7 @@ namespace WojnaMrowisk
                 }
             }
 
+            //========== Displaying the map ================
             Console.SetCursorPosition(0, 0);
             for (var i = 0; i < map.DimensionX + 4; i++) Console.Write("=");
             Console.Write("\n");
@@ -186,7 +192,10 @@ namespace WojnaMrowisk
 
             for (var p = 0; p < map.DimensionX + 4; p++) Console.Write("=");
             Console.WriteLine("COLONIES COUNT: " + colonies.Count);
-            if (colonies.Count == 1)
+            //===================================================
+
+
+            if (colonies.Count == 1)//if there is only 1 colony left, saving all data to CSV
             {
                 running = false;
                 foreach (var col in colonies)
@@ -203,6 +212,7 @@ namespace WojnaMrowisk
             }
         }
 
+        //Adding a colony with new ID and initialising it.
         private void addColony()
         {
             var col = new Colony();
@@ -211,7 +221,14 @@ namespace WojnaMrowisk
             col.initialize(map);
             colStats.Add(col.colSt);
         }
-        
+
+        //Writing data to CSV
+        /*======================== Saving to files ==========================
+        The method below generates 3 files:
+        ColoniesData: ColonyID,MaxAnthills,MaxAnts,TimeOfDeath/V
+        AnthillsData: anthillColID,anthillID,maxAnts,size,timeOfCreation,timeOfDeath/V
+        AntsData: ColonyID,anthillID,isQueen,MaxHP,Damage,VisRange,FoodRange,speed,creationTime,timeOfDeath/V
+        */
         private void WriteCSV()
         {
             using (var writer = new StreamWriter("ColoniesData.csv"))
@@ -241,17 +258,4 @@ namespace WojnaMrowisk
             }
         }
     }
-    /*========================Saving to files==========================
-     - Each colony: 
-        -> max anthills
-        -> max ants
-        -> max ah.size
-        -> time(step) of death/victorious
-    - End of simulation time
-    - Num of colonies
-    - Anthills:
-
-        colID, maxAnthillsNum, maxAntsNum, timeOfDeath/V;
-        ahColID, maxAntsNum, size, timeOfCreation, timeOfDeath;
-     */
 }
